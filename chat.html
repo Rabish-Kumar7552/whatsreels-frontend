@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Whatsapp-Reels-App</title>
+<style>
+  :root{
+    --accent:#25D366;
+    --accent-dark:#075E54;
+    --accent-teal:#128C7E;
+    --bg-chat:#0b141a;
+    --bg-app:#111b21;
+    --panel:#1f2c34;
+    --panel-light:#2a3942;
+    --text:#e9edef;
+    --dim:#8696a0;
+    --bubble-out:#005c4b;
+    --bubble-in:#202c33;
+    --danger:#f15c6d;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#000;overflow:hidden;}
+
+  .app-frame{
+    max-width:480px;
+    height:100vh;
+    height:100dvh;
+    margin:0 auto;
+    position:relative;
+    background:var(--bg-app);
+    color:var(--text);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+
+  /* ---------- Screens container ---------- */
+  .screens{flex:1;position:relative;overflow:hidden;}
+  .screen{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    opacity:0; pointer-events:none;
+    transform:translateX(8px);
+    transition:opacity .18s ease, transform .18s ease;
+  }
+  .screen.active{opacity:1; pointer-events:auto; transform:translateX(0);}
+
+  /* ---------- Top App Bar ---------- */
+  .app-bar{
+    background:var(--panel);
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-shrink:0;
+  }
+  .app-bar h1{font-size:21px;font-weight:600;}
+  .app-bar-icons{display:flex;gap:20px;align-items:center;}
+  .app-bar-icons svg{width:22px;height:22px;fill:var(--text);cursor:pointer;}
+
+  /* ---------- Chat List ---------- */
+  .search-bar{
+    margin:8px 12px;
+    background:var(--panel-light);
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 14px;
+  }
+  .search-bar svg{width:17px;height:17px;fill:var(--dim);flex-shrink:0;}
+  .search-bar input{
+    background:none;border:none;outline:none;color:var(--text);
+    font-size:14px;width:100%;
+  }
+  .search-bar input::placeholder{color:var(--dim);}
+
+  .chat-list{flex:1;overflow-y:auto;}
+  .chat-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 16px;
+    cursor:pointer;
+    transition:background .1s ease;
+  }
+  .chat-item:active{background:var(--panel-light);}
+  .chat-avatar{
+    width:50px;height:50px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:17px;color:#fff;
+    flex-shrink:0;
+  }
+  .chat-info{flex:1;min-width:0;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:11px;}
+  .chat-top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+  .chat-name{font-size:16px;font-weight:500;}
+  .chat-time{font-size:12px;color:var(--dim);}
+  .chat-time.unread{color:var(--accent);font-weight:600;}
+  .chat-bottom-row{display:flex;justify-content:space-between;align-items:center;}
+  .chat-preview{font-size:13.5px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:250px;display:flex;align-items:center;gap:4px;}
+  .chat-preview svg{width:15px;height:15px;flex-shrink:0;}
+  .unread-badge{
+    background:var(--accent);color:#062017;
+    font-size:11.5px;font-weight:700;
+    min-width:20px;height:20px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    padding:0 6px;
+  }
+
+  /* FAB */
+  .fab{
+    position:absolute;
+    right:18px;
+    bottom:88px;
+    width:56px;height:56px;
+    border-radius:50%;
+    background:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 12px rgba(0,0,0,0.4);
+    cursor:pointer;
+    z-index:5;
+  }
+  .fab svg{width:24px;height:24px;fill:#062017;}
+
+  /* ---------- Status Screen ---------- */
+  .status-section-title{padding:14px 16px 6px;font-size:13px;color:var(--dim);font-weight:600;}
+  .my-status{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;}
+  .my-status-avatar{
+    width:50px;height:50px;border-radius:50%;
+    background:var(--panel-light);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;flex-shrink:0;
+  }
+  .my-status-avatar .plus{
+    position:absolute;bottom:-2px;right:-2px;
+    width:19px;height:19px;border-radius:50%;
+    background:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    border:2px solid var(--bg-app);
+  }
+  .my-status-avatar .plus svg{width:10px;height:10px;fill:#062017;}
+  .status-ring{
+    width:50px;height:50px;border-radius:50%;
+    padding:2px;
+    background:conic-gradient(var(--accent) 0deg 320deg, var(--panel-light) 320deg 360deg);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .status-ring.seen{background:var(--dim);}
+  .status-ring-inner{
+    width:100%;height:100%;border-radius:50%;
+    background:var(--bg-app);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:15px;color:#fff;
+  }
+  .status-avatar-fill{width:100%;height:100%;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;}
+
+  /* ---------- Chat Window ---------- */
+  .chat-window-bar{
+    background:var(--panel);
+    padding:10px 12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-shrink:0;
+  }
+  .back-btn{width:24px;height:24px;fill:var(--text);cursor:pointer;flex-shrink:0;}
+  .chat-window-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0;}
+  .chat-window-info{flex:1;min-width:0;}
+  .chat-window-name{font-size:16px;font-weight:600;}
+  .chat-window-status{font-size:12px;color:var(--dim);}
+  .chat-window-icons{display:flex;gap:18px;}
+  .chat-window-icons svg{width:20px;height:20px;fill:var(--text);}
+
+  .messages-area{
+    flex:1;overflow-y:auto;
+    padding:14px 10px;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,0.02) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(255,255,255,0.015) 0%, transparent 40%);
+    background-color:var(--bg-chat);
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .date-chip{
+    align-self:center;
+    background:var(--panel-light);
+    color:var(--dim);
+    font-size:12px;
+    padding:5px 12px;
+    border-radius:8px;
+    margin:8px 0 12px;
+  }
+  .msg-row{display:flex; margin:2px 0;}
+  .msg-row.out{justify-content:flex-end;}
+  .msg-row.in{justify-content:flex-start;}
+  .bubble{
+    max-width:78%;
+    padding:6px 8px 7px 9px;
+    border-radius:8px;
+    font-size:14.5px;
+    line-height:1.35;
+    position:relative;
+    box-shadow:0 1px 1px rgba(0,0,0,0.3);
+  }
+  .msg-row.out .bubble{background:var(--bubble-out); border-top-right-radius:2px;}
+  .msg-row.in .bubble{background:var(--bubble-in); border-top-left-radius:2px;}
+  .bubble-text{padding-right:52px; word-wrap:break-word; white-space:pre-wrap;}
+  .bubble-meta{
+    position:absolute;
+    bottom:5px; right:8px;
+    display:flex; align-items:center; gap:3px;
+    font-size:11px; color:rgba(233,237,239,0.6);
+  }
+  .bubble-meta svg{width:15px;height:11px;}
+  .tick-seen{fill:#53bdeb;}
+  .tick-sent{fill:rgba(233,237,239,0.6);}
+
+  .typing-row{display:flex;justify-content:flex-start;margin:4px 0;}
+  .typing-bubble{
+    background:var(--bubble-in);
+    border-radius:8px;
+    border-top-left-radius:2px;
+    padding:10px 14px;
+    display:flex;
+    gap:4px;
+  }
+  .typing-dot{width:6px;height:6px;border-radius:50%;background:var(--dim);animation:typingBounce 1.2s infinite ease-in-out;}
+  .typing-dot:nth-child(2){animation-delay:.15s;}
+  .typing-dot:nth-child(3){animation-delay:.3s;}
+  @keyframes typingBounce{
+    0%,60%,100%{transform:translateY(0); opacity:.5;}
+    30%{transform:translateY(-4px); opacity:1;}
+  }
+
+  .input-bar{
+    display:flex;
+    align-items:flex-end;
+    gap:8px;
+    padding:8px 10px;
+    background:var(--bg-app);
+    flex-shrink:0;
+  }
+  .input-pill{
+    flex:1;
+    background:var(--panel);
+    border-radius:22px;
+    display:flex;
+    align-items:center;
+    padding:8px 10px 8px 16px;
+    gap:8px;
+    min-height:42px;
+  }
+  .input-pill textarea{
+    flex:1;
+    background:none;border:none;outline:none;resize:none;
+    color:var(--text);font-size:14.5px;
+    max-height:90px;
+    font-family:inherit;
+    line-height:1.3;
+    padding-top:2px;
+  }
+  .input-pill textarea::placeholder{color:var(--dim);}
+  .input-pill svg{width:22px;height:22px;fill:var(--dim);flex-shrink:0;cursor:pointer;}
+  .send-btn{
+    width:42px;height:42px;border-radius:50%;
+    background:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;cursor:pointer;
+  }
+  .send-btn svg{width:19px;height:19px;fill:#062017;margin-left:2px;}
+
+  /* ---------- Bottom Nav ---------- */
+  .bottom-nav{
+    display:flex;
+    background:var(--panel);
+    flex-shrink:0;
+    padding-bottom:2px;
+    border-top:1px solid rgba(255,255,255,0.04);
+  }
+  .nav-item{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    padding:9px 0 7px;
+    cursor:pointer;
+    position:relative;
+  }
+  .nav-item svg{width:23px;height:23px;fill:var(--dim);}
+  .nav-item span{font-size:11px;color:var(--dim);}
+  .nav-item.active svg{fill:var(--accent);}
+  .nav-item.active span{color:var(--accent);font-weight:600;}
+  .nav-badge{
+    position:absolute; top:2px; right:calc(50% - 20px);
+    background:var(--accent); color:#062017;
+    font-size:10px; font-weight:700;
+    min-width:16px;height:16px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    padding:0 4px;
+  }
+
+  /* placeholders */
+  .placeholder-screen{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:var(--dim); text-align:center; padding:0 40px; gap:10px;
+  }
+  .placeholder-screen svg{width:64px;height:64px;fill:var(--panel-light);}
+  .placeholder-screen p{font-size:14px;}
+
+  ::-webkit-scrollbar{width:0;}
+</style>
+</head>
+<body>
+
+<div class="app-frame">
+  <div class="screens" id="screens"></div>
+
+  <div class="bottom-nav" id="bottomNav">
+    <div class="nav-item active" data-tab="chats">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 5.9 2 10.7c0 2.6 1.4 4.9 3.6 6.5-.1 1.2-.6 2.7-1.5 3.8 1.7-.2 3.4-.9 4.7-1.9 1 .3 2.1.4 3.2.4 5.5 0 10-3.9 10-8.8S17.5 2 12 2z"/></svg>
+      <span>Chats</span>
+      <div class="nav-badge">4</div>
+    </div>
+    <div class="nav-item" data-tab="status">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none" style="stroke:#8696a0"/><path d="M12 7v5l3 3" stroke="#8696a0" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <span>Status</span>
+    </div>
+    <div class="nav-item" data-tab="reels">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="#8696a0" stroke-width="2"/><path d="M9 4v16M15 4v16M3 9h6M15 9h6M3 15h6M15 15h6" stroke="#8696a0" stroke-width="1.5"/></svg>
+      <span>Reels</span>
+    </div>
+    <div class="nav-item" data-tab="calls">
+      <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.3 1L6.6 10.8z" fill="#8696a0"/></svg>
+      <span>Calls</span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ DUMMY DATA (replace with API calls to backend later) ============ */
+const CHATS = [
+  { id:'c1', name:'Priya Sharma', color:'#e91e63', lastMsg:'Kal milte hai 6 baje?', time:'12:41 PM', unread:2, online:true },
+  { id:'c2', name:'Coding Group 🔥', color:'#3f51b5', lastMsg:'Rohit: bhai backend push kar diya', time:'11:58 AM', unread:5, online:false, isGroup:true },
+  { id:'c3', name:'Amit', color:'#ff9800', lastMsg:'✓✓ Haan bilkul, sahi hai', time:'9:20 AM', unread:0, online:true },
+  { id:'c4', name:'Maa', color:'#4caf50', lastMsg:'khana kha liya?', time:'Yesterday', unread:1, online:false },
+];
+
+const STATUSES = [
+  { id:'s1', name:'Rohit Kumar', color:'#00bcd4', seen:false },
+  { id:'s2', name:'Sneha', color:'#e91e63', seen:false },
+  { id:'s3', name:'Guddu Bhai', color:'#8bc34a', seen:true },
+  { id:'s4', name:'Team Design', color:'#ff5722', seen:true },
+];
+
+const MESSAGES = {
+  c1: [
+    { from:'in', text:'Hii, kaise ho?', time:'12:20 PM' },
+    { from:'out', text:'Badhiya! Tum batao, project kaisa chal raha hai?', time:'12:25 PM', seen:true },
+    { from:'in', text:'Reels feature test kar rahi hoon, mast bana hai 🔥', time:'12:38 PM' },
+    { from:'in', text:'Kal milte hai 6 baje?', time:'12:41 PM' },
+  ],
+  c2: [
+    { from:'in', text:'Bhai backend push kar diya', time:'11:55 AM', sender:'Rohit' },
+    { from:'in', text:'Chat routes bhi add kar diye maine', time:'11:58 AM', sender:'Rohit' },
+  ],
+  c3: [
+    { from:'out', text:'Kal wala bug fix ho gaya', time:'9:15 AM', seen:true },
+    { from:'in', text:'✓✓ Haan bilkul, sahi hai', time:'9:20 AM' },
+  ],
+  c4: [
+    { from:'in', text:'khana kha liya?', time:'Yesterday' },
+  ],
+};
+
+let currentChatId = null;
+
+/* ============ SVG helpers ============ */
+const svgSearch = `<svg viewBox="0 0 24 24"><path d="M15.5 14h-.8l-.3-.3c1-1.1 1.6-2.6 1.6-4.2C16 6 13.3 3 9.5 3S3 6 3 9.5 6 16 9.5 16c1.6 0 3.1-.6 4.2-1.6l.3.3v.8l5 5 1.5-1.5-5-5zm-6 0C7 14 5 12 5 9.5S7 5 9.5 5 14 7 14 9.5 12 14 9.5 14z"/></svg>`;
+const svgDots = `<svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>`;
+const svgCamera = `<svg viewBox="0 0 24 24"><path d="M12 9a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM4 5l1.5-2h13L20 5h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2z"/></svg>`;
+const svgPlus = `<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`;
+const svgBack = `<svg viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8" stroke="currentColor" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const svgVideoCall = `<svg viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/></svg>`;
+const svgCall = `<svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.3 1L6.6 10.8z"/></svg>`;
+const svgAttach = `<svg viewBox="0 0 24 24"><path d="M16.5 6.5v10a4 4 0 0 1-8 0v-11a2.5 2.5 0 0 1 5 0v10a1 1 0 0 1-2 0v-9" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`;
+const svgMic = `<svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-2.1A7 7 0 0 0 19 12h-2z"/></svg>`;
+const svgSend = `<svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>`;
+const svgCheck1 = `<svg viewBox="0 0 16 11" class="tick-sent"><path d="M1 5.5L5 9.5L11 1.5" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>`;
+const svgCheck2 = `<svg viewBox="0 0 16 11" class="tick-seen"><path d="M1 5.5L5 9.5L11 1.5" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M5 5.5L9 9.5L15 1.5" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>`;
+
+function initials(name){ return name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
+
+/* ============ Build Screens ============ */
+const screensEl = document.getElementById('screens');
+
+function buildChatsScreen(){
+  const rows = CHATS.map(c => `
+    <div class="chat-item" data-open-chat="${c.id}">
+      <div class="chat-avatar" style="background:${c.color}">${initials(c.name)}</div>
+      <div class="chat-info">
+        <div class="chat-top-row">
+          <span class="chat-name">${c.name}</span>
+          <span class="chat-time ${c.unread ? 'unread' : ''}">${c.time}</span>
+        </div>
+        <div class="chat-bottom-row">
+          <span class="chat-preview">${c.lastMsg}</span>
+          ${c.unread ? `<div class="unread-badge">${c.unread}</div>` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  return `
+    <div class="screen active" data-screen="chats">
+      <div class="app-bar">
+        <h1>WhatsReels</h1>
+        <div class="app-bar-icons">${svgCamera}${svgDots}</div>
+      </div>
+      <div class="search-bar">${svgSearch}<input placeholder="Search or start new chat"/></div>
+      <div class="chat-list">${rows}</div>
+      <div class="fab">${svgPlus}</div>
+    </div>
+  `;
+}
+
+function buildStatusScreen(){
+  const rows = STATUSES.map(s => `
+    <div class="chat-item">
+      <div class="status-ring ${s.seen ? 'seen' : ''}">
+        <div class="status-ring-inner">
+          <div class="status-avatar-fill" style="background:${s.color}">${initials(s.name)}</div>
+        </div>
+      </div>
+      <div class="chat-info">
+        <div class="chat-top-row"><span class="chat-name">${s.name}</span></div>
+        <div class="chat-bottom-row"><span class="chat-preview">${s.seen ? 'Aaj, ' : 'Aaj, '} ${Math.floor(Math.random()*11)+1}:${(Math.floor(Math.random()*6))}0 PM</span></div>
+      </div>
+    </div>
+  `).join('');
+
+  return `
+    <div class="screen" data-screen="status">
+      <div class="app-bar"><h1>Status</h1><div class="app-bar-icons">${svgCamera}${svgDots}</div></div>
+      <div class="search-bar">${svgSearch}<input placeholder="Search"/></div>
+      <div class="status-section-title">My Status</div>
+      <div class="my-status">
+        <div class="my-status-avatar">
+          <span style="font-size:13px;color:var(--dim)">You</span>
+          <div class="plus">${svgPlus}</div>
+        </div>
+        <div class="chat-info" style="border-bottom:none;">
+          <div class="chat-name">My Status</div>
+          <div class="chat-preview" style="color:var(--dim)">Tap to add status update</div>
+        </div>
+      </div>
+      <div class="status-section-title">Recent updates</div>
+      <div class="chat-list">${rows}</div>
+    </div>
+  `;
+}
+
+function buildCallsScreen(){
+  return `
+    <div class="screen" data-screen="calls">
+      <div class="app-bar"><h1>Calls</h1><div class="app-bar-icons">${svgDots}</div></div>
+      <div class="placeholder-screen">
+        ${svgCall}
+        <p><strong style="color:var(--text)">Koi recent call nahi hai</strong><br>Apne contacts ko voice ya video call karo</p>
+      </div>
+    </div>
+  `;
+}
+
+function buildReelsPlaceholder(){
+  return `
+    <div class="screen" data-screen="reels">
+      <div class="placeholder-screen" style="background:#000;">
+        <svg viewBox="0 0 24 24" style="fill:#333"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="#333" stroke-width="2"/></svg>
+        <p style="color:#888">Reels feed yahan connect hoga<br>(reels-prototype.html wala feature)</p>
+      </div>
+    </div>
+  `;
+}
+
+function buildChatWindowScreen(){
+  return `
+    <div class="screen" data-screen="chatwindow" id="chatWindowScreen">
+      <div class="chat-window-bar">
+        <div class="back-btn" id="backFromChat">${svgBack}</div>
+        <div class="chat-window-avatar" id="cwAvatar"></div>
+        <div class="chat-window-info">
+          <div class="chat-window-name" id="cwName"></div>
+          <div class="chat-window-status" id="cwStatus">online</div>
+        </div>
+        <div class="chat-window-icons">${svgVideoCall}${svgCall}${svgDots}</div>
+      </div>
+      <div class="messages-area" id="messagesArea"></div>
+      <div class="input-bar">
+        <div class="input-pill">
+          <textarea id="msgInput" placeholder="Message" rows="1"></textarea>
+          ${svgAttach}
+        </div>
+        <div class="send-btn" id="sendBtn">${svgMic}</div>
+      </div>
+    </div>
+  `;
+}
+
+screensEl.innerHTML =
+  buildChatsScreen() +
+  buildStatusScreen() +
+  buildCallsScreen() +
+  buildReelsPlaceholder() +
+  buildChatWindowScreen();
+
+/* ============ Bottom Nav Switching ============ */
+const navItems = document.querySelectorAll('.nav-item');
+navItems.forEach(item => {
+  item.addEventListener('click', () => {
+    navItems.forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+    const tab = item.dataset.tab;
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelector(`[data-screen="${tab}"]`).classList.add('active');
+  });
+});
+
+/* ============ Open Chat Window ============ */
+function openChat(chatId){
+  currentChatId = chatId;
+  const chat = CHATS.find(c => c.id === chatId);
+  document.getElementById('cwAvatar').style.background = chat.color;
+  document.getElementById('cwAvatar').textContent = initials(chat.name);
+  document.getElementById('cwName').textContent = chat.name;
+  document.getElementById('cwStatus').textContent = chat.isGroup ? 'tap for group info' : (chat.online ? 'online' : 'last seen recently');
+
+  renderMessages(chatId);
+
+  document.getElementById('bottomNav').style.display = 'none';
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('chatWindowScreen').classList.add('active');
+}
+
+function renderMessages(chatId){
+  const msgs = MESSAGES[chatId] || [];
+  const area = document.getElementById('messagesArea');
+  let html = `<div class="date-chip">TODAY</div>`;
+  msgs.forEach(m => {
+    const tick = m.from === 'out' ? (m.seen ? svgCheck2 : svgCheck1) : '';
+    html += `
+      <div class="msg-row ${m.from}">
+        <div class="bubble">
+          <span class="bubble-text">${m.sender ? `<b style="color:${CHATS.find(c=>c.id===chatId).color}">${m.sender}</b><br>` : ''}${escapeHtml(m.text)}</span>
+          <span class="bubble-meta">${m.time} ${tick}</span>
+        </div>
+      </div>
+    `;
+  });
+  area.innerHTML = html;
+  area.scrollTop = area.scrollHeight;
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+document.addEventListener('click', (e) => {
+  const chatTrigger = e.target.closest('[data-open-chat]');
+  if (chatTrigger) {
+    openChat(chatTrigger.dataset.openChat);
+  }
+});
+
+document.getElementById('backFromChat').addEventListener('click', () => {
+  document.getElementById('bottomNav').style.display = 'flex';
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelector('[data-screen="chats"]').classList.add('active');
+  navItems.forEach(n => n.classList.remove('active'));
+  document.querySelector('.nav-item[data-tab="chats"]').classList.add('active');
+});
+
+/* ============ Send message (local demo — backend wiring goes here) ============ */
+const msgInput = document.getElementById('msgInput');
+const sendBtn = document.getElementById('sendBtn');
+
+function updateSendBtnIcon(){
+  const hasText = msgInput.value.trim().length > 0;
+  sendBtn.innerHTML = hasText ? svgSend : svgMic;
+}
+
+msgInput.addEventListener('input', () => {
+  msgInput.style.height = 'auto';
+  msgInput.style.height = Math.min(msgInput.scrollHeight, 90) + 'px';
+  updateSendBtnIcon();
+});
+
+function sendCurrentMessage(){
+  const text = msgInput.value.trim();
+  if (!text || !currentChatId) return;
+
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+  MESSAGES[currentChatId].push({ from: 'out', text, time: timeStr, seen: false });
+  renderMessages(currentChatId);
+
+  msgInput.value = '';
+  msgInput.style.height = 'auto';
+  updateSendBtnIcon();
+
+  /*
+    ---- BACKEND WIRING GOES HERE ----
+    fetch('http://localhost:5000/api/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify({ chatId: currentChatId, content: text, messageType: 'text' })
+    })
+    Then emit via socket.io: socket.emit('new-message', savedMessage)
+  */
+
+  // demo auto-reply so the thread feels alive
+  setTimeout(() => showTyping(), 500);
+  setTimeout(() => {
+    hideTyping();
+    MESSAGES[currentChatId].push({ from: 'in', text: 'Theek hai 👍', time: timeStr });
+    renderMessages(currentChatId);
+  }, 2200);
+}
+
+sendBtn.addEventListener('click', sendCurrentMessage);
+msgInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendCurrentMessage();
+  }
+});
+
+function showTyping(){
+  const area = document.getElementById('messagesArea');
+  const row = document.createElement('div');
+  row.className = 'typing-row';
+  row.id = 'typingRow';
+  row.innerHTML = `<div class="typing-bubble"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+  area.appendChild(row);
+  area.scrollTop = area.scrollHeight;
+}
+function hideTyping(){
+  const row = document.getElementById('typingRow');
+  if (row) row.remove();
+}
+</script>
+</body>
+</html>
