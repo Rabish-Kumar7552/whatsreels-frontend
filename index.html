@@ -672,6 +672,74 @@
     font-weight:600;
     cursor:pointer;
   }
+  /* ================= VOICE/VIDEO CALL ================= */
+  .call-overlay{
+    position:absolute; inset:0;
+    background:#0b141a;
+    z-index:90;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:space-between;
+    padding:60px 24px 40px;
+    text-align:center;
+  }
+  .call-overlay.open{display:flex;}
+  .call-remote-video{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    background:#000;
+    display:none;
+  }
+  .call-remote-video.show{display:block;}
+  .call-local-video{
+    position:absolute;
+    bottom:120px; right:16px;
+    width:100px; height:140px;
+    border-radius:12px;
+    object-fit:cover;
+    background:#222;
+    border:2px solid rgba(255,255,255,0.3);
+    z-index:2;
+    display:none;
+  }
+  .call-local-video.show{display:block;}
+  .call-top{position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:8px;}
+  .call-avatar-big{
+    width:110px;height:110px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:38px;color:#fff;
+    margin-bottom:8px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.4);
+  }
+  .call-name{color:#fff;font-size:22px;font-weight:600;}
+  .call-status{color:rgba(255,255,255,0.65);font-size:14.5px;margin-top:4px;}
+  .call-actions{position:relative; z-index:2; display:flex; gap:28px; align-items:center; justify-content:center;}
+  .call-btn{
+    width:60px;height:60px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer; border:none;
+    transition:transform .12s ease;
+  }
+  .call-btn:active{transform:scale(0.92);}
+  .call-btn svg{width:26px;height:26px;}
+  .call-btn.accept{background:#25D366;}
+  .call-btn.accept svg{fill:#062017;}
+  .call-btn.reject{background:var(--danger);}
+  .call-btn.reject svg{fill:#fff;}
+  .call-btn.end{background:var(--danger); width:64px;height:64px;}
+  .call-btn.end svg{fill:#fff;width:28px;height:28px;}
+  .call-btn.mute{background:rgba(255,255,255,0.15);}
+  .call-btn.mute.active{background:#fff;}
+  .call-btn.mute svg{fill:#fff;}
+  .call-btn.mute.active svg{fill:#062017;}
+  .call-btn.cam{background:rgba(255,255,255,0.15);}
+  .call-btn.cam.active{background:#fff;}
+  .call-btn.cam svg{fill:#fff;}
+  .call-btn.cam.active svg{fill:#062017;}
+  .call-incoming-actions{display:flex; gap:50px;}
+  .call-incoming-actions .call-btn-label{color:#fff;font-size:12.5px;margin-top:8px;text-align:center;}
 </style>
 </head>
 <body>
@@ -840,6 +908,46 @@
       </div>
       <div class="sv-tap-zone left" id="svTapLeft"></div>
       <div class="sv-tap-zone right" id="svTapRight"></div>
+    </div>
+  </div>
+
+  <div class="call-overlay" id="callOverlay">
+    <video class="call-remote-video" id="callRemoteVideo" autoplay playsinline></video>
+    <video class="call-local-video" id="callLocalVideo" autoplay playsinline muted></video>
+
+    <div class="call-top">
+      <div class="call-avatar-big" id="callAvatarBig"></div>
+      <div class="call-name" id="callPeerName"></div>
+      <div class="call-status" id="callStatusText">Calling...</div>
+    </div>
+
+    <!-- Shown while ringing / incoming, before the call is answered -->
+    <div class="call-incoming-actions" id="callIncomingActions" style="display:none;">
+      <div>
+        <div class="call-btn reject" id="callRejectBtn">
+          <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.3 1L6.6 10.8z" transform="rotate(135 12 12)"/></svg>
+        </div>
+        <div class="call-btn-label">Decline</div>
+      </div>
+      <div>
+        <div class="call-btn accept" id="callAcceptBtn">
+          <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.3 1L6.6 10.8z"/></svg>
+        </div>
+        <div class="call-btn-label">Accept</div>
+      </div>
+    </div>
+
+    <!-- Shown once the call is active (or while outgoing call is ringing) -->
+    <div class="call-actions" id="callActiveActions" style="display:none;">
+      <div class="call-btn mute" id="callMuteBtn">
+        <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-2.1A7 7 0 0 0 19 12h-2z"/></svg>
+      </div>
+      <div class="call-btn end" id="callEndBtn">
+        <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.3 1L6.6 10.8z" transform="rotate(135 12 12)"/></svg>
+      </div>
+      <div class="call-btn cam" id="callCamBtn">
+        <svg viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+      </div>
     </div>
   </div>
 </div>
@@ -1316,7 +1424,11 @@ function buildChatWindowScreen(){
           <div class="chat-window-name" id="cwName"></div>
           <div class="chat-window-status" id="cwStatus">online</div>
         </div>
-        <div class="chat-window-icons">${svgVideoCall}${svgCall}${svgDots}</div>
+        <div class="chat-window-icons">
+          <span id="startVideoCallBtn" style="display:flex;cursor:pointer;">${svgVideoCall}</span>
+          <span id="startVoiceCallBtn" style="display:flex;cursor:pointer;">${svgCall}</span>
+          ${svgDots}
+        </div>
       </div>
       <div class="messages-area" id="messagesArea"></div>
       <div class="input-bar">
@@ -2034,6 +2146,258 @@ function hideTyping(){
   if (row) row.remove();
 }
 
+/* ================= WEBRTC VOICE/VIDEO CALLS ================= */
+let localStream = null;
+let peerConnection = null;
+let currentCallPeerId = null;   // the OTHER person's userId
+let currentCallType = null;     // 'audio' or 'video'
+let isCaller = false;
+let pendingOffer = null;        // stored offer while showing incoming-call UI
+let micMuted = false;
+let camOff = false;
+
+const ICE_SERVERS = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+  ],
+};
+
+function getCallOtherParticipant(){
+  return getOtherParticipant(currentChatObj);
+}
+
+function openCallOverlay(){
+  document.getElementById('callOverlay').classList.add('open');
+}
+function closeCallOverlay(){
+  document.getElementById('callOverlay').classList.remove('open');
+  document.getElementById('callIncomingActions').style.display = 'none';
+  document.getElementById('callActiveActions').style.display = 'none';
+  document.getElementById('callRemoteVideo').classList.remove('show');
+  document.getElementById('callLocalVideo').classList.remove('show');
+  document.getElementById('callRemoteVideo').srcObject = null;
+  document.getElementById('callLocalVideo').srcObject = null;
+}
+
+function setCallHeaderInfo(user, statusText){
+  const nameEl = document.getElementById('callPeerName');
+  const avatarEl = document.getElementById('callAvatarBig');
+  const statusEl = document.getElementById('callStatusText');
+  nameEl.textContent = user ? user.name : 'Unknown';
+  avatarEl.style.background = colorFromId(user ? user._id : '');
+  avatarEl.textContent = initials(user ? user.name : '?');
+  statusEl.textContent = statusText;
+}
+
+async function startCall(callType){
+  const other = getCallOtherParticipant();
+  if (!other) return;
+  if (currentChatObj.isGroupChat) {
+    alert('Group calls are not supported yet - only 1-to-1 calls.');
+    return;
+  }
+
+  currentCallPeerId = other._id;
+  currentCallType = callType;
+  isCaller = true;
+
+  setCallHeaderInfo(other, 'Calling...');
+  document.getElementById('callIncomingActions').style.display = 'none';
+  document.getElementById('callActiveActions').style.display = 'flex';
+  document.getElementById('callCamBtn').style.display = callType === 'video' ? 'flex' : 'none';
+  openCallOverlay();
+
+  try {
+    localStream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: callType === 'video',
+    });
+  } catch (err) {
+    alert('Camera/Microphone access denied or not available.');
+    closeCallOverlay();
+    return;
+  }
+
+  if (callType === 'video') {
+    const localVideo = document.getElementById('callLocalVideo');
+    localVideo.srcObject = localStream;
+    localVideo.classList.add('show');
+  }
+
+  peerConnection = createPeerConnection();
+  localStream.getTracks().forEach((track) => peerConnection.addTrack(track, localStream));
+
+  const offer = await peerConnection.createOffer();
+  await peerConnection.setLocalDescription(offer);
+
+  socket.emit('call-user', {
+    to: currentCallPeerId,
+    from: currentUser.id,
+    offer,
+    callType,
+  });
+}
+
+function createPeerConnection(){
+  const pc = new RTCPeerConnection(ICE_SERVERS);
+
+  pc.onicecandidate = (event) => {
+    if (event.candidate && currentCallPeerId) {
+      socket.emit('ice-candidate', { to: currentCallPeerId, candidate: event.candidate });
+    }
+  };
+
+  pc.ontrack = (event) => {
+    const remoteVideo = document.getElementById('callRemoteVideo');
+    remoteVideo.srcObject = event.streams[0];
+    if (currentCallType === 'video') remoteVideo.classList.add('show');
+    document.getElementById('callStatusText').textContent = 'Connected';
+  };
+
+  pc.onconnectionstatechange = () => {
+    if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
+      endCurrentCall(false);
+    }
+  };
+
+  return pc;
+}
+
+function initCallSocketListeners(){
+  socket.on('incoming-call', async ({ from, offer, callType }) => {
+    // If already in a call, auto-reject
+    if (currentCallPeerId) {
+      socket.emit('reject-call', { to: from });
+      return;
+    }
+
+    currentCallPeerId = from;
+    currentCallType = callType;
+    isCaller = false;
+    pendingOffer = offer;
+
+    // Look up the caller's info from our chats list (participants) if we have it
+    let callerUser = null;
+    CHATS.forEach((c) => {
+      (c.participants || []).forEach((p) => {
+        if (p._id === from) callerUser = p;
+      });
+    });
+
+    setCallHeaderInfo(callerUser || { name: 'Unknown', _id: from }, callType === 'video' ? 'Incoming video call...' : 'Incoming voice call...');
+    document.getElementById('callActiveActions').style.display = 'none';
+    document.getElementById('callIncomingActions').style.display = 'flex';
+    openCallOverlay();
+  });
+
+  socket.on('call-answered', async ({ answer }) => {
+    if (!peerConnection) return;
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+    document.getElementById('callStatusText').textContent = 'Connected';
+  });
+
+  socket.on('ice-candidate', async ({ candidate }) => {
+    if (!peerConnection || !candidate) return;
+    try {
+      await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+    } catch (err) { /* ignore late candidates */ }
+  });
+
+  socket.on('call-rejected', () => {
+    document.getElementById('callStatusText').textContent = 'Call declined';
+    setTimeout(() => endCurrentCall(false), 1200);
+  });
+
+  socket.on('call-ended', () => {
+    endCurrentCall(false);
+  });
+}
+
+document.getElementById('callAcceptBtn').addEventListener('click', async () => {
+  document.getElementById('callIncomingActions').style.display = 'none';
+  document.getElementById('callActiveActions').style.display = 'flex';
+  document.getElementById('callCamBtn').style.display = currentCallType === 'video' ? 'flex' : 'none';
+  document.getElementById('callStatusText').textContent = 'Connecting...';
+
+  try {
+    localStream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: currentCallType === 'video',
+    });
+  } catch (err) {
+    alert('Camera/Microphone access denied or not available.');
+    socket.emit('reject-call', { to: currentCallPeerId });
+    closeCallOverlay();
+    currentCallPeerId = null;
+    return;
+  }
+
+  if (currentCallType === 'video') {
+    const localVideo = document.getElementById('callLocalVideo');
+    localVideo.srcObject = localStream;
+    localVideo.classList.add('show');
+  }
+
+  peerConnection = createPeerConnection();
+  localStream.getTracks().forEach((track) => peerConnection.addTrack(track, localStream));
+
+  await peerConnection.setRemoteDescription(new RTCSessionDescription(pendingOffer));
+  const answer = await peerConnection.createAnswer();
+  await peerConnection.setLocalDescription(answer);
+
+  socket.emit('answer-call', { to: currentCallPeerId, answer });
+  pendingOffer = null;
+});
+
+document.getElementById('callRejectBtn').addEventListener('click', () => {
+  socket.emit('reject-call', { to: currentCallPeerId });
+  endCurrentCall(false);
+});
+
+document.getElementById('callEndBtn').addEventListener('click', () => {
+  if (currentCallPeerId) socket.emit('end-call', { to: currentCallPeerId });
+  endCurrentCall(false);
+});
+
+document.getElementById('callMuteBtn').addEventListener('click', (e) => {
+  if (!localStream) return;
+  micMuted = !micMuted;
+  localStream.getAudioTracks().forEach((track) => (track.enabled = !micMuted));
+  e.currentTarget.classList.toggle('active', micMuted);
+});
+
+document.getElementById('callCamBtn').addEventListener('click', (e) => {
+  if (!localStream) return;
+  camOff = !camOff;
+  localStream.getVideoTracks().forEach((track) => (track.enabled = !camOff));
+  e.currentTarget.classList.toggle('active', camOff);
+});
+
+function endCurrentCall(){
+  if (peerConnection) {
+    peerConnection.close();
+    peerConnection = null;
+  }
+  if (localStream) {
+    localStream.getTracks().forEach((track) => track.stop());
+    localStream = null;
+  }
+  currentCallPeerId = null;
+  currentCallType = null;
+  isCaller = false;
+  pendingOffer = null;
+  micMuted = false;
+  camOff = false;
+  closeCallOverlay();
+}
+
+// Wire up the call buttons in the chat header (added in Step 2 above)
+document.addEventListener('click', (e) => {
+  if (e.target.closest('#startVideoCallBtn')) startCall('video');
+  if (e.target.closest('#startVoiceCallBtn')) startCall('audio');
+});
+
 /* ================= AUTH FLOW (connects to real backend) ================= */
 // Change this if your backend runs on a different port
 const API_BASE = 'https://whatsreels-backend.onrender.com/api';
@@ -2256,6 +2620,8 @@ function initSocket(){
   socket.on('connect', () => {
     socket.emit('setup', currentUser.id);
   });
+
+  initCallSocketListeners();
 
   // A new message arrived for a chat we're part of
   socket.on('message-received', (message) => {
