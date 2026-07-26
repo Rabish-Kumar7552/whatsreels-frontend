@@ -2400,7 +2400,7 @@ document.addEventListener('click', (e) => {
 
 /* ================= AUTH FLOW (connects to real backend) ================= */
 // Change this if your backend runs on a different port
-const API_BASE = 'https://whatsreels-backend.onrender.com/api';
+const API_BASE = 'https://whatsreels-backend-2kh3.onrender.com/api';
 
 // authToken, currentUser, pendingPhone are declared at the very top of the
 // script (kept in memory only for this session - no localStorage per
@@ -2615,7 +2615,7 @@ function completeLogin(){
 let socket = null;
 
 function initSocket(){
-  socket = io('https://whatsreels-backend.onrender.com');
+  socket = io('https://whatsreels-backend-2kh3.onrender.com');
 
   socket.on('connect', () => {
     socket.emit('setup', currentUser.id);
