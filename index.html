@@ -1746,7 +1746,7 @@ function renderMessages(chatId){
       bodyHtml = `<video class="bubble-video" src="${m.content}" data-view-media="video" data-media-src="${m.content}" preload="metadata"></video>`;
     } else if (m.messageType === 'document') {
       bodyHtml = `
-        <div class="bubble-doc" data-open-doc="${m.content}">
+        <div class="bubble-doc" data-open-doc="${m.content}" data-doc-name="${escapeHtml(m.fileName || 'document')}">
           <div class="bubble-doc-icon">${docExtIcon()}</div>
           <div class="bubble-doc-info">
             <div class="bubble-doc-name">${escapeHtml(m.fileName || 'Document')}</div>
@@ -1791,7 +1791,13 @@ function renderMessages(chatId){
   // Tap a document bubble to open/download it in a new tab
   area.querySelectorAll('[data-open-doc]').forEach(el => {
     el.addEventListener('click', () => {
-      window.open(el.dataset.openDoc, '_blank');
+      const link = document.createElement('a');
+      link.href = el.dataset.openDoc;
+      link.download = el.dataset.docName || 'document';
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     });
   });
 }
