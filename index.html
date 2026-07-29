@@ -740,6 +740,110 @@
   .call-btn.cam.active svg{fill:#062017;}
   .call-incoming-actions{display:flex; gap:50px;}
   .call-incoming-actions .call-btn-label{color:#fff;font-size:12.5px;margin-top:8px;text-align:center;}
+
+  /* ================= ATTACH MENU ================= */
+  .attach-backdrop{
+    position:absolute; inset:0;
+    background:rgba(0,0,0,0.5);
+    z-index:65;
+    display:none;
+    align-items:flex-end;
+  }
+  .attach-backdrop.open{display:flex;}
+  .attach-sheet{
+    width:100%;
+    background:var(--panel);
+    border-radius:16px 16px 0 0;
+    padding:20px 20px 28px;
+  }
+  .attach-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:16px;
+    margin-top:16px;
+  }
+  .attach-option{
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    cursor:pointer;
+  }
+  .attach-option-icon{
+    width:56px;height:56px;border-radius:16px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .attach-option-icon svg{width:26px;height:26px;fill:#fff;}
+  .attach-option span{font-size:12.5px;color:var(--text);}
+  .attach-title{font-size:16px;font-weight:600;color:var(--text);}
+
+  /* Chat bubble media */
+  .bubble-image{
+    max-width:240px; max-height:280px;
+    border-radius:8px;
+    display:block;
+    cursor:pointer;
+    margin-bottom:2px;
+  }
+  .bubble-video{
+    max-width:240px; max-height:280px;
+    border-radius:8px;
+    display:block;
+    margin-bottom:2px;
+  }
+  .bubble-doc{
+    display:flex; align-items:center; gap:10px;
+    background:rgba(255,255,255,0.06);
+    border-radius:8px;
+    padding:10px 12px;
+    min-width:200px;
+    max-width:260px;
+    cursor:pointer;
+  }
+  .bubble-doc-icon{
+    width:38px;height:38px;border-radius:8px;
+    background:var(--accent-teal);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .bubble-doc-icon svg{width:20px;height:20px;fill:#fff;}
+  .bubble-doc-info{min-width:0; flex:1;}
+  .bubble-doc-name{
+    font-size:13.5px; color:var(--text); font-weight:500;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .bubble-doc-hint{font-size:11.5px; color:var(--dim); margin-top:2px;}
+
+  .upload-progress-row{
+    display:flex; align-items:center; gap:8px;
+    color:var(--dim); font-size:12.5px;
+    padding:6px 2px;
+  }
+  .upload-spinner{
+    width:14px;height:14px;border-radius:50%;
+    border:2px solid rgba(255,255,255,0.2);
+    border-top-color:var(--accent);
+    animation:authSpin .7s linear infinite;
+    flex-shrink:0;
+  }
+
+  /* Fullscreen image/video viewer for tapping a bubble image */
+  .media-viewer{
+    position:absolute; inset:0;
+    background:#000;
+    z-index:95;
+    display:none;
+    align-items:center; justify-content:center;
+    flex-direction:column;
+  }
+  .media-viewer.open{display:flex;}
+  .media-viewer img, .media-viewer video{
+    max-width:100%; max-height:85%;
+  }
+  .media-viewer-close{
+    position:absolute; top:20px; right:20px; z-index:2;
+    width:36px;height:36px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+  .media-viewer-close svg{width:22px;height:22px;fill:#fff;}
 </style>
 </head>
 <body>
@@ -950,6 +1054,44 @@
       </div>
     </div>
   </div>
+
+  <div class="attach-backdrop" id="attachMenu">
+    <div class="attach-sheet">
+      <div class="attach-title">Share</div>
+      <div class="attach-grid">
+        <div class="attach-option" id="attachPhoto">
+          <div class="attach-option-icon" style="background:#e91e63;">
+            <svg viewBox="0 0 24 24"><path d="M12 9a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM4 5l1.5-2h13L20 5h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2z"/></svg>
+          </div>
+          <span>Photo</span>
+        </div>
+        <div class="attach-option" id="attachVideo">
+          <div class="attach-option-icon" style="background:#8e24aa;">
+            <svg viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+          </div>
+          <span>Video</span>
+        </div>
+        <div class="attach-option" id="attachDocument">
+          <div class="attach-option-icon" style="background:#039be5;">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM13 9V3.5L18.5 9H13z"/></svg>
+          </div>
+          <span>Document</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="chatPhotoInput" accept="image/*" style="display:none;" />
+  <input type="file" id="chatVideoInput" accept="video/*" style="display:none;" />
+  <input type="file" id="chatDocInput" accept=".pdf,.doc,.docx,.txt,.xls,.xlsx,.ppt,.pptx" style="display:none;" />
+
+  <div class="media-viewer" id="mediaViewer">
+    <div class="media-viewer-close" id="mediaViewerClose">
+      <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#fff" stroke-width="2.3" fill="none" stroke-linecap="round"/></svg>
+    </div>
+    <img id="mediaViewerImg" style="display:none;" />
+    <video id="mediaViewerVideo" style="display:none;" controls playsinline></video>
+  </div>
 </div>
 
 <script>
@@ -1027,7 +1169,13 @@ function buildChatsScreen(){
   const rows = CHATS.length ? CHATS.map(c => {
     const name = chatDisplayName(c);
     const color = chatAvatarColor(c);
-    const lastMsg = c.lastMessage ? (c.lastMessage.isDeletedForEveryone ? 'This message was deleted' : c.lastMessage.content) : 'Say hi 👋';
+    const lastMsg = c.lastMessage
+      ? (c.lastMessage.isDeletedForEveryone ? 'This message was deleted'
+        : c.lastMessage.messageType === 'image' ? '📷 Photo'
+        : c.lastMessage.messageType === 'video' ? '🎥 Video'
+        : c.lastMessage.messageType === 'document' ? '📄 ' + (c.lastMessage.fileName || 'Document')
+        : c.lastMessage.content)
+      : 'Say hi 👋';
     const time = c.lastMessage ? formatTime(c.lastMessage.createdAt) : formatTime(c.updatedAt);
     const hasUnread = c.unreadCount > 0;
     return `
@@ -1434,7 +1582,7 @@ function buildChatWindowScreen(){
       <div class="input-bar">
         <div class="input-pill">
           <textarea id="msgInput" placeholder="Message" rows="1"></textarea>
-          ${svgAttach}
+          <span id="attachBtn" style="display:flex;cursor:pointer;">${svgAttach}</span>
         </div>
         <div class="send-btn" id="sendBtn">${svgMic}</div>
       </div>
@@ -1572,6 +1720,10 @@ async function pollForNewMessages(chatId){
   } catch (err) { /* silent - will retry on next tick */ }
 }
 
+function docExtIcon(){
+  return `<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM13 9V3.5L18.5 9H13z"/></svg>`;
+}
+
 function renderMessages(chatId){
   const msgs = MESSAGES[chatId] || [];
   const area = document.getElementById('messagesArea');
@@ -1582,14 +1734,34 @@ function renderMessages(chatId){
     const other = getOtherParticipant(currentChatObj);
     const seenByOther = other && m.seenBy && m.seenBy.some(u => (u._id || u) === other._id);
     const tick = isOut ? (seenByOther ? svgCheck2 : svgCheck1) : '';
-    const text = m.isDeletedForEveryone ? '<i>This message was deleted</i>' : escapeHtml(m.content);
     const senderLabel = (!isOut && currentChatObj.isGroupChat)
       ? `<b style="color:${colorFromId(m.sender._id)}">${m.sender.name}</b><br>` : '';
+
+    let bodyHtml;
+    if (m.isDeletedForEveryone) {
+      bodyHtml = `<span class="bubble-text"><i>This message was deleted</i></span>`;
+    } else if (m.messageType === 'image') {
+      bodyHtml = `<img class="bubble-image" src="${m.content}" data-view-media="image" data-media-src="${m.content}" />`;
+    } else if (m.messageType === 'video') {
+      bodyHtml = `<video class="bubble-video" src="${m.content}" data-view-media="video" data-media-src="${m.content}" preload="metadata"></video>`;
+    } else if (m.messageType === 'document') {
+      bodyHtml = `
+        <div class="bubble-doc" data-open-doc="${m.content}">
+          <div class="bubble-doc-icon">${docExtIcon()}</div>
+          <div class="bubble-doc-info">
+            <div class="bubble-doc-name">${escapeHtml(m.fileName || 'Document')}</div>
+            <div class="bubble-doc-hint">Tap to open</div>
+          </div>
+        </div>
+      `;
+    } else {
+      bodyHtml = `<span class="bubble-text">${senderLabel}${escapeHtml(m.content)}</span>`;
+    }
 
     html += `
       <div class="msg-row ${isOut ? 'out' : 'in'}">
         <div class="bubble">
-          <span class="bubble-text">${senderLabel}${text}</span>
+          ${bodyHtml}
           <span class="bubble-meta">${formatTime(m.createdAt)} ${tick}</span>
         </div>
       </div>
@@ -1597,7 +1769,37 @@ function renderMessages(chatId){
   });
   area.innerHTML = html;
   area.scrollTop = area.scrollHeight;
+
+  // Tap an image/video bubble to open it fullscreen
+  area.querySelectorAll('[data-view-media]').forEach(el => {
+    el.addEventListener('click', () => {
+      const src = el.dataset.mediaSrc;
+      const type = el.dataset.viewMedia;
+      const imgEl = document.getElementById('mediaViewerImg');
+      const videoEl = document.getElementById('mediaViewerVideo');
+      if (type === 'image') {
+        imgEl.src = src; imgEl.style.display = 'block';
+        videoEl.style.display = 'none'; videoEl.pause();
+      } else {
+        videoEl.src = src; videoEl.style.display = 'block';
+        imgEl.style.display = 'none';
+      }
+      document.getElementById('mediaViewer').classList.add('open');
+    });
+  });
+
+  // Tap a document bubble to open/download it in a new tab
+  area.querySelectorAll('[data-open-doc]').forEach(el => {
+    el.addEventListener('click', () => {
+      window.open(el.dataset.openDoc, '_blank');
+    });
+  });
 }
+
+document.getElementById('mediaViewerClose').addEventListener('click', () => {
+  document.getElementById('mediaViewer').classList.remove('open');
+  document.getElementById('mediaViewerVideo').pause();
+});
 
 function escapeHtml(str){
   const div = document.createElement('div');
@@ -2705,6 +2907,105 @@ async function fetchChats(){
   } catch (err) {
     console.log('Could not fetch chats:', err);
   }
+}
+
+/* ================= ATTACH: photo / video / document sharing ================= */
+document.getElementById('attachBtn').addEventListener('click', () => {
+  document.getElementById('attachMenu').classList.add('open');
+});
+document.getElementById('attachMenu').addEventListener('click', (e) => {
+  if (e.target.id === 'attachMenu') document.getElementById('attachMenu').classList.remove('open');
+});
+document.getElementById('attachPhoto').addEventListener('click', () => {
+  document.getElementById('attachMenu').classList.remove('open');
+  document.getElementById('chatPhotoInput').click();
+});
+document.getElementById('attachVideo').addEventListener('click', () => {
+  document.getElementById('attachMenu').classList.remove('open');
+  document.getElementById('chatVideoInput').click();
+});
+document.getElementById('attachDocument').addEventListener('click', () => {
+  document.getElementById('attachMenu').classList.remove('open');
+  document.getElementById('chatDocInput').click();
+});
+
+document.getElementById('chatPhotoInput').addEventListener('change', (e) => {
+  handleChatFileUpload(e.target.files[0], 'image');
+  e.target.value = '';
+});
+document.getElementById('chatVideoInput').addEventListener('change', (e) => {
+  handleChatFileUpload(e.target.files[0], 'video');
+  e.target.value = '';
+});
+document.getElementById('chatDocInput').addEventListener('change', (e) => {
+  handleChatFileUpload(e.target.files[0], 'document');
+  e.target.value = '';
+});
+
+function showUploadingBubble(){
+  const area = document.getElementById('messagesArea');
+  const row = document.createElement('div');
+  row.className = 'msg-row out';
+  row.id = 'uploadingRow';
+  row.innerHTML = `<div class="bubble"><div class="upload-progress-row"><div class="upload-spinner"></div>Uploading...</div></div>`;
+  area.appendChild(row);
+  area.scrollTop = area.scrollHeight;
+}
+function hideUploadingBubble(){
+  const row = document.getElementById('uploadingRow');
+  if (row) row.remove();
+}
+
+async function handleChatFileUpload(file, type){
+  if (!file || !currentChatId) return;
+
+  const maxSize = type === 'document' ? 10 * 1024 * 1024 : 8 * 1024 * 1024;
+  if (file.size > maxSize) {
+    alert(`File ${maxSize / (1024*1024)}MB se choti honi chahiye.`);
+    return;
+  }
+
+  showUploadingBubble();
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const dataUrl = e.target.result;
+    try {
+      const res = await fetch(`${API_BASE}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },
+        body: JSON.stringify({
+          chatId: currentChatId,
+          content: dataUrl,
+          messageType: type,
+          fileName: type === 'document' ? file.name : undefined,
+        }),
+      });
+      const savedMessage = await res.json();
+      hideUploadingBubble();
+
+      if (!res.ok) {
+        alert(savedMessage.message || 'Upload nahi hua.');
+        return;
+      }
+
+      MESSAGES[currentChatId] = MESSAGES[currentChatId] || [];
+      MESSAGES[currentChatId].push(savedMessage);
+      renderMessages(currentChatId);
+
+      if (currentChatObj) {
+        currentChatObj.lastMessage = savedMessage;
+        currentChatObj.updatedAt = savedMessage.createdAt;
+      }
+      if (socket && currentChatObj) {
+        socket.emit('new-message', { ...savedMessage, chat: currentChatObj });
+      }
+    } catch (err) {
+      hideUploadingBubble();
+      alert('Backend se connect nahi ho paya. Upload fail hua.');
+    }
+  };
+  reader.readAsDataURL(file);
 }
 
 // Runs continuously in the background (independent of which chat, if any, is
