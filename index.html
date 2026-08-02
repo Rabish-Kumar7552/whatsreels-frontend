@@ -1949,10 +1949,24 @@ async function openChat(chatId){
   // open. This guarantees delivery even if the live socket push doesn't land,
   // without needing to leave and reopen the chat.
   clearInterval(chatPollTimer);
-  chatPollTimer = setInterval(() => pollForNewMessages(chatId), 2000);
+  chatPollTimer = setInterval(() => pollForNewMessages(chatId), 6000);
 }
 
 let chatPollTimer = null;
+
+// ================= PERFORMANCE: pause polling when the tab is hidden =================
+// Saves battery/bandwidth (and avoids hammering the backend) while the app
+// is in the background. Sockets still handle real-time delivery either way -
+// this only affects the backup polling loop.
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    clearInterval(chatPollTimer);
+  } else if (currentChatId) {
+    clearInterval(chatPollTimer);
+    pollForNewMessages(currentChatId); // catch up immediately on return
+    chatPollTimer = setInterval(() => pollForNewMessages(currentChatId), 6000);
+  }
+});
 
 async function pollForNewMessages(chatId){
   if (currentChatId !== chatId) return; // chat was closed, stop caring
@@ -2086,6 +2100,43 @@ document.getElementById('messagesArea').addEventListener('click', (e) => {
   openMessageActionSheet(row.dataset.msgId);
 });
 
+// ================= PERFORMANCE: compress images before upload =================
+// Resizes to at most maxDim px on the longer side and re-encodes as JPEG at
+// the given quality. Cuts a typical phone photo from several MB down to a
+// few hundred KB, which makes uploads, chat loading, and polling all faster.
+// Only used for images - videos and documents are sent as-is since real
+// video compression isn't practical to do purely in the browser.
+function compressImage(file, maxDim = 1280, quality = 0.72){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round(height * (maxDim / width));
+            width = maxDim;
+          } else {
+            width = Math.round(width * (maxDim / height));
+            height = maxDim;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => reject(new Error('Image load failed'));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error('File read failed'));
+    reader.readAsDataURL(file);
+  });
+}
+
 function escapeHtml(str){
   const div = document.createElement('div');
   div.textContent = str;
@@ -2135,10 +2186,10 @@ async function uploadNewStatus(file){
     return;
   }
 
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const dataUrl = e.target.result;
-    const type = file.type.startsWith('video/') ? 'video' : 'image';
+  const isVideo = file.type.startsWith('video/');
+  const type = isVideo ? 'video' : 'image';
+
+  async function sendStatus(dataUrl){
     try {
       const res = await fetch(`${API_BASE}/status`, {
         method: 'POST',
@@ -2154,8 +2205,22 @@ async function uploadNewStatus(file){
     } catch (err) {
       alert('Backend se connect nahi ho paya. Server check karo.');
     }
-  };
-  reader.readAsDataURL(file);
+  }
+
+  if (isVideo) {
+    const reader = new FileReader();
+    reader.onload = (e) => sendStatus(e.target.result);
+    reader.onerror = () => alert('File read nahi ho payi.');
+    reader.readAsDataURL(file);
+    return;
+  }
+
+  try {
+    const compressedDataUrl = await compressImage(file, 1080, 0.72);
+    sendStatus(compressedDataUrl);
+  } catch (err) {
+    alert('Photo process nahi ho payi. Dobara try karo.');
+  }
 }
 
 /* ============ Settings screen ============ */
@@ -2199,28 +2264,31 @@ document.getElementById('settingsAvatarInput').addEventListener('change', async 
     return;
   }
 
-  const reader = new FileReader();
-  reader.onload = async (ev) => {
-    const dataUrl = ev.target.result;
-    try {
-      const res = await fetch(`${API_BASE}/auth/complete-profile`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },
-        body: JSON.stringify({ profilePhoto: dataUrl }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.message || 'Photo update nahi ho payi.');
-        return;
-      }
-      currentUser.profilePhoto = dataUrl;
-      openSettingsScreen(); // re-render with new photo
-      refreshChatsScreen();
-    } catch (err) {
-      alert('Backend se connect nahi ho paya.');
+  let dataUrl;
+  try {
+    dataUrl = await compressImage(file, 640, 0.8); // avatars stay small
+  } catch (err) {
+    alert('Photo process nahi ho payi. Dobara try karo.');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/auth/complete-profile`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },
+      body: JSON.stringify({ profilePhoto: dataUrl }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      alert(data.message || 'Photo update nahi ho payi.');
+      return;
     }
-  };
-  reader.readAsDataURL(file);
+    currentUser.profilePhoto = dataUrl;
+    openSettingsScreen(); // re-render with new photo
+    refreshChatsScreen();
+  } catch (err) {
+    alert('Backend se connect nahi ho paya.');
+  }
 });
 
 document.getElementById('settingsEditName').addEventListener('click', async () => {
@@ -2890,7 +2958,7 @@ document.addEventListener('click', (e) => {
 // change the paths here - everything else in this section stays the same.
 const CHAT_MENU_ENDPOINTS = {
   mute: (chatId) => `${API_BASE}/chats/${chatId}/mute`,       // PUT  body: { muted: true/false }
-  clearChat: (chatId) => `${API_BASE}/chats/${chatId}/clear`, // PUT  (no body needed)
+  clearChat: (chatId) => `${API_BASE}/messages/${chatId}/clear`, // PUT  (no body needed)
   deleteChat: (chatId) => `${API_BASE}/chats/${chatId}`,      // DELETE
 };
 
@@ -2901,8 +2969,8 @@ const CHAT_MENU_ENDPOINTS = {
 // that way after a page refresh (or reach the other person) until the
 // matching backend route + socket relay exist.
 const MESSAGE_ENDPOINTS = {
-  deleteForMe: (messageId) => `${API_BASE}/messages/${messageId}/delete-for-me`,       // PUT
-  deleteForEveryone: (messageId) => `${API_BASE}/messages/${messageId}/delete-for-everyone`, // PUT
+  deleteForMe: (messageId) => `${API_BASE}/messages/${messageId}`,
+  deleteForEveryone: (messageId) => `${API_BASE}/messages/${messageId}`,
 };
 
 let msgActionTargetId = null;
@@ -2939,8 +3007,9 @@ async function deleteMessageForMe(messageId){
   // this device - safe to ignore if the backend route isn't ready yet
   try {
     await fetch(MESSAGE_ENDPOINTS.deleteForMe(messageId), {
-      method: 'PUT',
-      headers: { Authorization: `Bearer ${authToken}` },
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },
+      body: JSON.stringify({ forEveryone: false }),
     });
   } catch (err) { /* already hidden locally, nothing else to do */ }
 }
@@ -2964,8 +3033,9 @@ async function deleteMessageForEveryone(messageId){
 
   try {
     await fetch(MESSAGE_ENDPOINTS.deleteForEveryone(messageId), {
-      method: 'PUT',
-      headers: { Authorization: `Bearer ${authToken}` },
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },
+      body: JSON.stringify({ forEveryone: true }),
     });
   } catch (err) { /* stays marked locally either way */ }
 
@@ -3453,7 +3523,7 @@ document.getElementById('avatarPicker').addEventListener('click', () => {
   avatarFileInput.click();
 });
 
-avatarFileInput.addEventListener('change', () => {
+avatarFileInput.addEventListener('change', async () => {
   const file = avatarFileInput.files[0];
   if (!file) return;
 
@@ -3466,15 +3536,15 @@ avatarFileInput.addEventListener('change', () => {
     return;
   }
 
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    selectedAvatarDataUrl = e.target.result;
+  try {
+    selectedAvatarDataUrl = await compressImage(file, 640, 0.8); // avatars stay small
     const img = document.getElementById('avatarPreviewImg');
     img.src = selectedAvatarDataUrl;
     img.style.display = 'block';
     document.getElementById('avatarPlaceholderIcon').style.display = 'none';
-  };
-  reader.readAsDataURL(file);
+  } catch (err) {
+    alert('Photo process nahi ho payi. Dobara try karo.');
+  }
 });
 
 document.getElementById('finishProfileBtn').addEventListener('click', async () => {
@@ -3518,7 +3588,7 @@ function completeLogin(){
   console.log('✅ Logged in as:', currentUser);
   initSocket();
   fetchChats();
-  setInterval(pollChatListForUpdates, 4000);
+  setInterval(pollChatListForUpdates, 8000);
 }
 
 /* ================= Socket.io real-time connection ================= */
@@ -3683,9 +3753,7 @@ async function handleChatFileUpload(file, type){
 
   showUploadingBubble();
 
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const dataUrl = e.target.result;
+  async function sendDataUrl(dataUrl){
     try {
       const res = await fetch(`${API_BASE}/messages`, {
         method: 'POST',
@@ -3720,6 +3788,26 @@ async function handleChatFileUpload(file, type){
       hideUploadingBubble();
       alert('Backend se connect nahi ho paya. Upload fail hua.');
     }
+  }
+
+  if (type === 'image') {
+    // compress first - cuts a multi-MB phone photo down to a few hundred KB
+    try {
+      const compressedDataUrl = await compressImage(file, 1280, 0.72);
+      sendDataUrl(compressedDataUrl);
+    } catch (err) {
+      hideUploadingBubble();
+      alert('Photo process nahi ho payi. Dobara try karo.');
+    }
+    return;
+  }
+
+  // video / document - sent as-is, real compression isn't practical client-side
+  const reader = new FileReader();
+  reader.onload = (e) => sendDataUrl(e.target.result);
+  reader.onerror = () => {
+    hideUploadingBubble();
+    alert('File read nahi ho payi.');
   };
   reader.readAsDataURL(file);
 }
