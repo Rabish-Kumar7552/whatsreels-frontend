@@ -844,6 +844,191 @@
     cursor:pointer;
   }
   .media-viewer-close svg{width:22px;height:22px;fill:#fff;}
+
+  /* ================= CHAT 3-DOT MENU ================= */
+  .chat-menu-backdrop{
+    position:absolute; inset:0;
+    background:rgba(0,0,0,0.5);
+    z-index:65;
+    display:none;
+    align-items:flex-start;
+    justify-content:flex-end;
+  }
+  .chat-menu-backdrop.open{display:flex;}
+  .chat-menu-sheet{
+    margin-top:56px;
+    margin-right:8px;
+    width:230px;
+    background:var(--panel-light);
+    border-radius:10px;
+    padding:6px 0;
+    box-shadow:0 6px 20px rgba(0,0,0,0.4);
+  }
+  .chat-menu-item{
+    display:flex; align-items:center; gap:14px;
+    padding:12px 16px;
+    cursor:pointer;
+    font-size:14.5px;
+    color:var(--text);
+  }
+  .chat-menu-item:active{background:rgba(255,255,255,0.06);}
+  .chat-menu-item svg{width:19px;height:19px;fill:var(--dim);flex-shrink:0;}
+  .chat-menu-item.danger{color:var(--danger);}
+  .chat-menu-item.danger svg{fill:var(--danger);}
+
+  /* ================= CONTACT / GROUP INFO ================= */
+  .info-overlay{
+    position:absolute; inset:0;
+    background:var(--bg-app);
+    z-index:80;
+    display:none;
+    flex-direction:column;
+  }
+  .info-overlay.open{display:flex;}
+  .info-bar{
+    background:var(--panel);
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    flex-shrink:0;
+  }
+  .info-bar h1{font-size:19px;font-weight:600;}
+  .info-bar svg{width:22px;height:22px;fill:var(--text);cursor:pointer;}
+  .info-body{flex:1; overflow-y:auto;}
+  .info-profile-block{
+    display:flex; flex-direction:column; align-items:center;
+    padding:28px 20px;
+    background:var(--panel);
+    margin-bottom:10px;
+  }
+  .info-avatar{
+    width:110px;height:110px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:38px; font-weight:700; color:#fff;
+    margin-bottom:16px;
+    overflow:hidden;
+  }
+  .info-avatar img{width:100%;height:100%;object-fit:cover;}
+  .info-name{font-size:21px;font-weight:600; text-align:center;}
+  .info-sub{font-size:13.5px;color:var(--dim); margin-top:4px; text-align:center;}
+  .info-section-title{padding:16px 16px 6px; font-size:12.5px; color:var(--accent); font-weight:600;}
+  .info-row{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:14px 16px;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+    cursor:pointer;
+  }
+  .info-row.no-click{cursor:default;}
+  .info-row-left{display:flex; align-items:center; gap:14px; min-width:0;}
+  .info-row-left svg{width:20px;height:20px;fill:var(--dim); flex-shrink:0;}
+  .info-row-text .title{font-size:15px;color:var(--text);}
+  .info-row-text .subtitle{font-size:12.5px;color:var(--dim); margin-top:2px;}
+  .info-toggle{
+    width:44px;height:24px;border-radius:12px;
+    background:var(--panel-light);
+    position:relative; flex-shrink:0; cursor:pointer;
+    transition:background .15s ease;
+  }
+  .info-toggle.on{background:var(--accent);}
+  .info-toggle-knob{
+    position:absolute; top:2px; left:2px;
+    width:20px;height:20px;border-radius:50%;
+    background:#fff;
+    transition:left .15s ease;
+  }
+  .info-toggle.on .info-toggle-knob{left:22px;}
+  .info-danger-row{
+    padding:14px 16px;
+    color:var(--danger);
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+    display:flex; align-items:center; gap:14px;
+  }
+  .info-danger-row svg{width:20px;height:20px;fill:var(--danger);}
+  .info-member-row{
+    display:flex; align-items:center; gap:12px;
+    padding:10px 16px;
+  }
+  .info-member-avatar{
+    width:40px;height:40px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:14px;color:#fff;
+    flex-shrink:0;
+  }
+  .info-member-name{font-size:14.5px;color:var(--text);}
+
+  /* ================= MEDIA / LINKS / DOCS ================= */
+  .media-overlay{
+    position:absolute; inset:0;
+    background:var(--bg-app);
+    z-index:80;
+    display:none;
+    flex-direction:column;
+  }
+  .media-overlay.open{display:flex;}
+  .media-tabs{
+    display:flex;
+    background:var(--panel);
+    flex-shrink:0;
+  }
+  .media-tab{
+    flex:1; text-align:center;
+    padding:13px 0;
+    font-size:14px; font-weight:600;
+    color:var(--dim);
+    cursor:pointer;
+    border-bottom:2.5px solid transparent;
+  }
+  .media-tab.active{color:var(--accent); border-bottom-color:var(--accent);}
+  .media-body{flex:1; overflow-y:auto;}
+  .media-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:2px;
+    padding:2px;
+  }
+  .media-grid-item{
+    aspect-ratio:1/1;
+    overflow:hidden;
+    cursor:pointer;
+    background:#000;
+  }
+  .media-grid-item img, .media-grid-item video{width:100%;height:100%;object-fit:cover;}
+  .media-empty{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    color:var(--dim); gap:10px; padding:0 40px; text-align:center;
+  }
+  .media-empty svg{width:56px;height:56px;fill:var(--panel-light);}
+  .docs-list-item{
+    display:flex; align-items:center; gap:12px;
+    padding:12px 16px;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+    cursor:pointer;
+  }
+
+  /* ================= SEARCH IN CHAT ================= */
+  .chat-search-bar{
+    display:none;
+    align-items:center; gap:10px;
+    background:var(--panel);
+    padding:10px 12px;
+    flex-shrink:0;
+  }
+  .chat-search-bar.active{display:flex;}
+  .chat-search-bar input{
+    flex:1;
+    background:var(--panel-light);
+    border:none; outline:none;
+    border-radius:8px;
+    padding:9px 12px;
+    color:var(--text); font-size:14px;
+  }
+  .chat-search-bar svg{width:20px;height:20px;fill:var(--text);cursor:pointer;flex-shrink:0;}
+  .chat-search-count{font-size:12px;color:var(--dim); white-space:nowrap;}
+  .bubble-text mark{background:#ffd54f; color:#000; border-radius:2px;}
+  .msg-row.search-active .bubble{outline:2px solid var(--accent);}
 </style>
 </head>
 <body>
@@ -1092,6 +1277,55 @@
     <img id="mediaViewerImg" style="display:none;" />
     <video id="mediaViewerVideo" style="display:none;" controls playsinline></video>
   </div>
+
+  <div class="chat-menu-backdrop" id="chatMenuBackdrop">
+    <div class="chat-menu-sheet">
+      <div class="chat-menu-item" id="menuViewInfo">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <span id="menuViewInfoLabel">View Contact</span>
+      </div>
+      <div class="chat-menu-item" id="menuMediaDocs">
+        <svg viewBox="0 0 24 24"><path d="M12 9a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM4 5l1.5-2h13L20 5h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2z"/></svg>
+        <span>Media, Links &amp; Docs</span>
+      </div>
+      <div class="chat-menu-item" id="menuSearch">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.8l-.3-.3c1-1.1 1.6-2.6 1.6-4.2C16 6 13.3 3 9.5 3S3 6 3 9.5 6 16 9.5 16c1.6 0 3.1-.6 4.2-1.6l.3.3v.8l5 5 1.5-1.5-5-5zm-6 0C7 14 5 12 5 9.5S7 5 9.5 5 14 7 14 9.5 12 14 9.5 14z"/></svg>
+        <span>Search in Chat</span>
+      </div>
+      <div class="chat-menu-item" id="menuMute">
+        <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-2.1A7 7 0 0 0 19 12h-2z"/></svg>
+        <span id="menuMuteLabel">Mute Notifications</span>
+      </div>
+      <div class="chat-menu-item" id="menuClearChat">
+        <svg viewBox="0 0 24 24"><path d="M6 7h12M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-8 0v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V7" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+        <span>Clear Chat</span>
+      </div>
+      <div class="chat-menu-item danger" id="menuDeleteChat">
+        <svg viewBox="0 0 24 24"><path d="M6 7h12M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-8 0v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V7M10 11v6M14 11v6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+        <span>Delete Chat</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-overlay" id="infoOverlay">
+    <div class="info-bar">
+      <svg id="infoBack" viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8" stroke="currentColor" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h1 id="infoBarTitle">Contact Info</h1>
+    </div>
+    <div class="info-body" id="infoBody"></div>
+  </div>
+
+  <div class="media-overlay" id="mediaOverlay">
+    <div class="info-bar">
+      <svg id="mediaOverlayBack" viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8" stroke="currentColor" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h1>Media, Links &amp; Docs</h1>
+    </div>
+    <div class="media-tabs">
+      <div class="media-tab active" data-media-tab="media">Media</div>
+      <div class="media-tab" data-media-tab="docs">Docs</div>
+    </div>
+    <div class="media-body" id="mediaBody"></div>
+  </div>
 </div>
 
 <script>
@@ -1178,13 +1412,14 @@ function buildChatsScreen(){
       : 'Say hi 👋';
     const time = c.lastMessage ? formatTime(c.lastMessage.createdAt) : formatTime(c.updatedAt);
     const hasUnread = c.unreadCount > 0;
+    const muteIconHtml = c.isMuted ? `<svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:var(--dim);flex-shrink:0;"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v1.79l2.45 2.45c.03-.2.05-.4.05-.61zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27l6.01 6.01V12c0 1.66 1.34 3 3 3 .07 0 .14-.02.21-.02L13.73 16.5c-.61.3-1.29.5-2 .5-2.76 0-5-2.24-5-5v-.06L2.05 4.94 3.27 3.72l16.99 17-1.27 1.27L14 16.98V19h-2v-2.02c-.34.02-.68.02-1 0V19H9v-2.05c-2.83-.48-5-2.94-5-5.95h1.7c0 2.08 1.32 3.9 3.3 4.44V17.9L4.27 3z"/></svg>` : '';
     return `
     <div class="chat-item" data-open-chat="${c._id}">
       <div class="chat-avatar" style="background:${color}">${initials(name)}</div>
       <div class="chat-info">
         <div class="chat-top-row">
           <span class="chat-name">${name}</span>
-          <span class="chat-time ${hasUnread ? 'unread' : ''}">${time}</span>
+          <span style="display:flex;align-items:center;gap:4px;">${muteIconHtml}<span class="chat-time ${hasUnread ? 'unread' : ''}">${time}</span></span>
         </div>
         <div class="chat-bottom-row">
           <span class="chat-preview">${escapeHtml(lastMsg)}</span>
@@ -1565,7 +1800,7 @@ async function openReelComments(reelId){
 function buildChatWindowScreen(){
   return `
     <div class="screen" data-screen="chatwindow" id="chatWindowScreen">
-      <div class="chat-window-bar">
+      <div class="chat-window-bar" id="chatWindowBar">
         <div class="back-btn" id="backFromChat">${svgBack}</div>
         <div class="chat-window-avatar" id="cwAvatar"></div>
         <div class="chat-window-info">
@@ -1575,8 +1810,15 @@ function buildChatWindowScreen(){
         <div class="chat-window-icons">
           <span id="startVideoCallBtn" style="display:flex;cursor:pointer;">${svgVideoCall}</span>
           <span id="startVoiceCallBtn" style="display:flex;cursor:pointer;">${svgCall}</span>
-          ${svgDots}
+          <span id="chatMenuBtn" style="display:flex;cursor:pointer;">${svgDots}</span>
         </div>
+      </div>
+      <div class="chat-search-bar" id="chatSearchBar">
+        <svg id="chatSearchClose" viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8" stroke="currentColor" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <input type="text" id="chatSearchInput" placeholder="Search in chat" />
+        <span class="chat-search-count" id="chatSearchCount"></span>
+        <svg id="chatSearchUp" viewBox="0 0 24 24"><path d="M12 6l7 7-1.4 1.4L12 8.8l-5.6 5.6L5 13z"/></svg>
+        <svg id="chatSearchDown" viewBox="0 0 24 24"><path d="M12 18l-7-7 1.4-1.4L12 15.2l5.6-5.6L19 11z"/></svg>
       </div>
       <div class="messages-area" id="messagesArea"></div>
       <div class="input-bar">
@@ -1644,6 +1886,7 @@ async function openChat(chatId){
   document.getElementById('bottomNav').style.display = 'none';
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('chatWindowScreen').classList.add('active');
+  document.getElementById('chatSearchBar').classList.remove('active');
 
   document.getElementById('messagesArea').innerHTML = `<div class="date-chip">Loading...</div>`;
 
@@ -1746,7 +1989,7 @@ function renderMessages(chatId){
       bodyHtml = `<video class="bubble-video" src="${m.content}" data-view-media="video" data-media-src="${m.content}" preload="metadata"></video>`;
     } else if (m.messageType === 'document') {
       bodyHtml = `
-        <div class="bubble-doc" data-open-doc="${m.content}" data-doc-name="${escapeHtml(m.fileName || 'document')}">
+        <div class="bubble-doc" data-open-doc="${m.content}">
           <div class="bubble-doc-icon">${docExtIcon()}</div>
           <div class="bubble-doc-info">
             <div class="bubble-doc-name">${escapeHtml(m.fileName || 'Document')}</div>
@@ -1791,13 +2034,7 @@ function renderMessages(chatId){
   // Tap a document bubble to open/download it in a new tab
   area.querySelectorAll('[data-open-doc]').forEach(el => {
     el.addEventListener('click', () => {
-      const link = document.createElement('a');
-      link.href = el.dataset.openDoc;
-      link.download = el.dataset.docName || 'document';
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      window.open(el.dataset.openDoc, '_blank');
     });
   });
 }
@@ -2605,6 +2842,346 @@ document.addEventListener('click', (e) => {
   if (e.target.closest('#startVideoCallBtn')) startCall('video');
   if (e.target.closest('#startVoiceCallBtn')) startCall('audio');
 });
+
+/* ================= CHAT 3-DOT MENU: info / media / search / mute / clear / delete ================= */
+// If your backend uses different route names for these three actions, just
+// change the paths here - everything else in this section stays the same.
+const CHAT_MENU_ENDPOINTS = {
+  mute: (chatId) => `${API_BASE}/chats/${chatId}/mute`,       // PUT  body: { muted: true/false }
+  clearChat: (chatId) => `${API_BASE}/chats/${chatId}/clear`, // PUT  (no body needed)
+  deleteChat: (chatId) => `${API_BASE}/chats/${chatId}`,      // DELETE
+};
+
+document.getElementById('chatMenuBtn').addEventListener('click', () => {
+  const isGroup = currentChatObj && currentChatObj.isGroupChat;
+  document.getElementById('menuViewInfoLabel').textContent = isGroup ? 'Group Info' : 'View Contact';
+  const muted = currentChatObj && currentChatObj.isMuted;
+  document.getElementById('menuMuteLabel').textContent = muted ? 'Unmute Notifications' : 'Mute Notifications';
+  document.getElementById('chatMenuBackdrop').classList.add('open');
+});
+document.getElementById('chatMenuBackdrop').addEventListener('click', (e) => {
+  if (e.target.id === 'chatMenuBackdrop') document.getElementById('chatMenuBackdrop').classList.remove('open');
+});
+function closeChatMenu(){ document.getElementById('chatMenuBackdrop').classList.remove('open'); }
+
+document.getElementById('menuViewInfo').addEventListener('click', () => { closeChatMenu(); openContactInfo(); });
+document.getElementById('menuMediaDocs').addEventListener('click', () => { closeChatMenu(); openMediaLinksDocs(); });
+document.getElementById('menuSearch').addEventListener('click', () => { closeChatMenu(); openChatSearch(); });
+document.getElementById('menuMute').addEventListener('click', () => { closeChatMenu(); toggleMuteChat(); });
+document.getElementById('menuClearChat').addEventListener('click', () => { closeChatMenu(); clearCurrentChat(); });
+document.getElementById('menuDeleteChat').addEventListener('click', () => { closeChatMenu(); deleteCurrentChat(); });
+
+/* ---- 1. View Contact / Group Info ---- */
+function openContactInfo(){
+  if (!currentChatObj) return;
+  const isGroup = currentChatObj.isGroupChat;
+  const name = chatDisplayName(currentChatObj);
+  const color = chatAvatarColor(currentChatObj);
+  const other = getOtherParticipant(currentChatObj);
+  const muted = !!currentChatObj.isMuted;
+
+  document.getElementById('infoBarTitle').textContent = isGroup ? 'Group Info' : 'Contact Info';
+
+  const mediaCount = (MESSAGES[currentChatId] || []).filter(m => m.messageType === 'image' || m.messageType === 'video' || m.messageType === 'document').length;
+
+  let membersHtml = '';
+  if (isGroup) {
+    const members = (currentChatObj.participants || []).map(p => `
+      <div class="info-member-row">
+        <div class="info-member-avatar" style="background:${colorFromId(p._id)}">${initials(p.name)}</div>
+        <div class="info-member-name">${escapeHtml(p.name)}${p._id === currentUser.id ? ' (You)' : ''}</div>
+      </div>
+    `).join('');
+    membersHtml = `
+      <div class="info-section-title">${(currentChatObj.participants || []).length} Members</div>
+      ${members}
+    `;
+  }
+
+  document.getElementById('infoBody').innerHTML = `
+    <div class="info-profile-block">
+      <div class="info-avatar" style="background:${color}">${
+        (!isGroup && other && other.profilePhoto) ? `<img src="${other.profilePhoto}" />` : initials(name)
+      }</div>
+      <div class="info-name">${escapeHtml(name)}</div>
+      ${!isGroup && other && other.phoneNumber ? `<div class="info-sub">${escapeHtml(other.phoneNumber)}</div>` : ''}
+      ${!isGroup && other && other.about ? `<div class="info-sub">${escapeHtml(other.about)}</div>` : ''}
+    </div>
+
+    <div class="info-row" id="infoMediaRow">
+      <div class="info-row-left">
+        ${svgCamera}
+        <div class="info-row-text">
+          <div class="title">Media, Links &amp; Docs</div>
+          <div class="subtitle">${mediaCount} item${mediaCount === 1 ? '' : 's'}</div>
+        </div>
+      </div>
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--dim);"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <div class="info-row no-click">
+      <div class="info-row-left">
+        <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-2.1A7 7 0 0 0 19 12h-2z"/></svg>
+        <div class="info-row-text"><div class="title">Mute Notifications</div></div>
+      </div>
+      <div class="info-toggle ${muted ? 'on' : ''}" id="infoMuteToggle"><div class="info-toggle-knob"></div></div>
+    </div>
+
+    ${membersHtml}
+
+    <div class="info-danger-row" id="infoClearChat">
+      <svg viewBox="0 0 24 24"><path d="M6 7h12M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-8 0v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V7" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+      Clear Chat
+    </div>
+    <div class="info-danger-row" id="infoDeleteChat">
+      <svg viewBox="0 0 24 24"><path d="M6 7h12M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-8 0v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V7M10 11v6M14 11v6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+      Delete Chat
+    </div>
+  `;
+
+  document.getElementById('infoMuteToggle').addEventListener('click', toggleMuteChat);
+  document.getElementById('infoMediaRow').addEventListener('click', openMediaLinksDocs);
+  document.getElementById('infoClearChat').addEventListener('click', clearCurrentChat);
+  document.getElementById('infoDeleteChat').addEventListener('click', deleteCurrentChat);
+
+  document.getElementById('infoOverlay').classList.add('open');
+}
+document.getElementById('infoBack').addEventListener('click', () => {
+  document.getElementById('infoOverlay').classList.remove('open');
+});
+
+/* ---- 2. Media, Links & Docs ---- */
+function openMediaLinksDocs(){
+  if (!currentChatId) return;
+  document.querySelectorAll('.media-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.media-tab[data-media-tab="media"]').classList.add('active');
+  renderMediaLinksDocs('media');
+  document.getElementById('mediaOverlay').classList.add('open');
+}
+function renderMediaLinksDocs(tab){
+  const msgs = MESSAGES[currentChatId] || [];
+  const body = document.getElementById('mediaBody');
+
+  if (tab === 'media') {
+    const items = msgs.filter(m => m.messageType === 'image' || m.messageType === 'video');
+    if (!items.length) {
+      body.innerHTML = `<div class="media-empty">${svgCamera}<p>Koi photo ya video nahi hai is chat mein.</p></div>`;
+      return;
+    }
+    body.innerHTML = `<div class="media-grid">${items.map(m => `
+      <div class="media-grid-item" data-view-media="${m.messageType}" data-media-src="${m.content}">
+        ${m.messageType === 'image' ? `<img src="${m.content}" />` : `<video src="${m.content}" preload="metadata"></video>`}
+      </div>
+    `).join('')}</div>`;
+    body.querySelectorAll('[data-view-media]').forEach(el => {
+      el.addEventListener('click', () => {
+        const src = el.dataset.mediaSrc;
+        const type = el.dataset.viewMedia;
+        const imgEl = document.getElementById('mediaViewerImg');
+        const videoEl = document.getElementById('mediaViewerVideo');
+        if (type === 'image') {
+          imgEl.src = src; imgEl.style.display = 'block';
+          videoEl.style.display = 'none'; videoEl.pause();
+        } else {
+          videoEl.src = src; videoEl.style.display = 'block';
+          imgEl.style.display = 'none';
+        }
+        document.getElementById('mediaViewer').classList.add('open');
+      });
+    });
+  } else {
+    const docs = msgs.filter(m => m.messageType === 'document');
+    if (!docs.length) {
+      body.innerHTML = `<div class="media-empty">${docExtIcon()}<p>Koi document nahi hai is chat mein.</p></div>`;
+      return;
+    }
+    body.innerHTML = docs.map(m => `
+      <div class="docs-list-item" data-open-doc="${m.content}">
+        <div class="bubble-doc-icon">${docExtIcon()}</div>
+        <div class="bubble-doc-info">
+          <div class="bubble-doc-name">${escapeHtml(m.fileName || 'Document')}</div>
+          <div class="bubble-doc-hint">${formatTime(m.createdAt)}</div>
+        </div>
+      </div>
+    `).join('');
+    body.querySelectorAll('[data-open-doc]').forEach(el => {
+      el.addEventListener('click', () => window.open(el.dataset.openDoc, '_blank'));
+    });
+  }
+}
+document.querySelectorAll('.media-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.media-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    renderMediaLinksDocs(tab.dataset.mediaTab);
+  });
+});
+document.getElementById('mediaOverlayBack').addEventListener('click', () => {
+  document.getElementById('mediaOverlay').classList.remove('open');
+});
+
+/* ---- 3. Search in Chat ---- */
+let searchMatches = [];
+let searchIndex = -1;
+
+function openChatSearch(){
+  document.getElementById('chatSearchBar').classList.add('active');
+  document.getElementById('chatSearchInput').value = '';
+  document.getElementById('chatSearchInput').focus();
+  document.getElementById('chatSearchCount').textContent = '';
+  searchMatches = [];
+  searchIndex = -1;
+}
+function closeChatSearch(){
+  document.getElementById('chatSearchBar').classList.remove('active');
+  renderMessages(currentChatId); // clears highlights
+}
+document.getElementById('chatSearchClose').addEventListener('click', closeChatSearch);
+
+document.getElementById('chatSearchInput').addEventListener('input', (e) => {
+  runChatSearch(e.target.value.trim());
+});
+document.getElementById('chatSearchInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); document.getElementById('chatSearchDown').click(); }
+});
+function escapeRegex(s){ return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+function runChatSearch(query){
+  renderMessages(currentChatId); // reset first
+  const area = document.getElementById('messagesArea');
+  searchMatches = [];
+  searchIndex = -1;
+
+  if (!query) {
+    document.getElementById('chatSearchCount').textContent = '';
+    return;
+  }
+
+  const testRe = new RegExp(escapeRegex(query), 'i');
+  area.querySelectorAll('.bubble-text').forEach(el => {
+    if (testRe.test(el.textContent)) {
+      const replaceRe = new RegExp(escapeRegex(query), 'gi');
+      el.innerHTML = el.textContent.replace(replaceRe, (match) => `<mark>${match}</mark>`);
+      searchMatches.push(el.closest('.msg-row'));
+    }
+  });
+
+  document.getElementById('chatSearchCount').textContent = searchMatches.length ? `1/${searchMatches.length}` : 'No results';
+  if (searchMatches.length) {
+    searchIndex = 0;
+    jumpToSearchMatch();
+  }
+}
+function jumpToSearchMatch(){
+  document.querySelectorAll('.msg-row.search-active').forEach(r => r.classList.remove('search-active'));
+  const row = searchMatches[searchIndex];
+  if (!row) return;
+  row.classList.add('search-active');
+  row.scrollIntoView({ block: 'center' });
+  document.getElementById('chatSearchCount').textContent = `${searchIndex + 1}/${searchMatches.length}`;
+}
+document.getElementById('chatSearchUp').addEventListener('click', () => {
+  if (!searchMatches.length) return;
+  searchIndex = (searchIndex - 1 + searchMatches.length) % searchMatches.length;
+  jumpToSearchMatch();
+});
+document.getElementById('chatSearchDown').addEventListener('click', () => {
+  if (!searchMatches.length) return;
+  searchIndex = (searchIndex + 1) % searchMatches.length;
+  jumpToSearchMatch();
+});
+
+/* ---- 4. Mute Notifications ---- */
+async function toggleMuteChat(){
+  if (!currentChatObj) return;
+  const newMuted = !currentChatObj.isMuted;
+  try {
+    const res = await fetch(CHAT_MENU_ENDPOINTS.mute(currentChatId), {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },
+      body: JSON.stringify({ muted: newMuted }),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      alert(data.message || 'Mute update nahi hua.');
+      return;
+    }
+    currentChatObj.isMuted = newMuted;
+    const inList = CHATS.find(c => c._id === currentChatId);
+    if (inList) inList.isMuted = newMuted;
+
+    const toggleEl = document.getElementById('infoMuteToggle');
+    if (toggleEl) toggleEl.classList.toggle('on', newMuted);
+    document.getElementById('menuMuteLabel').textContent = newMuted ? 'Unmute Notifications' : 'Mute Notifications';
+    refreshChatsScreen();
+  } catch (err) {
+    alert('Backend se connect nahi ho paya. Server check karo.');
+  }
+}
+
+/* ---- 5. Clear Chat ---- */
+async function clearCurrentChat(){
+  if (!currentChatId) return;
+  if (!confirm('Kya tum is chat ke saare messages clear karna chahte ho? Ye undo nahi ho sakta.')) return;
+
+  try {
+    const res = await fetch(CHAT_MENU_ENDPOINTS.clearChat(currentChatId), {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${authToken}` },
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      alert(data.message || 'Chat clear nahi hui.');
+      return;
+    }
+    MESSAGES[currentChatId] = [];
+    renderMessages(currentChatId);
+
+    const inList = CHATS.find(c => c._id === currentChatId);
+    if (inList) { inList.lastMessage = null; }
+    refreshChatsScreen();
+    document.getElementById('infoOverlay').classList.remove('open');
+  } catch (err) {
+    alert('Backend se connect nahi ho paya. Server check karo.');
+  }
+}
+
+/* ---- 6. Delete Chat ---- */
+async function deleteCurrentChat(){
+  if (!currentChatId) return;
+  if (!confirm('Kya tum poori chat delete karna chahte ho? Ye permanent hai aur undo nahi ho sakta.')) return;
+
+  const chatIdToDelete = currentChatId;
+  try {
+    const res = await fetch(CHAT_MENU_ENDPOINTS.deleteChat(chatIdToDelete), {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${authToken}` },
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      alert(data.message || 'Chat delete nahi hui.');
+      return;
+    }
+    CHATS = CHATS.filter(c => c._id !== chatIdToDelete);
+    delete MESSAGES[chatIdToDelete];
+    document.getElementById('infoOverlay').classList.remove('open');
+
+    // go back to chat list
+    if (socket) socket.emit('leave-chat', chatIdToDelete);
+    clearInterval(chatPollTimer);
+    document.getElementById('bottomNav').style.display = 'flex';
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelector('[data-screen="chats"]').classList.add('active');
+    navItems.forEach(n => n.classList.remove('active'));
+    document.querySelector('.nav-item[data-tab="chats"]').classList.add('active');
+    currentChatId = null;
+    currentChatObj = null;
+
+    refreshChatsScreen();
+  } catch (err) {
+    alert('Backend se connect nahi ho paya. Server check karo.');
+  }
+}
 
 /* ================= AUTH FLOW (connects to real backend) ================= */
 // Change this if your backend runs on a different port
