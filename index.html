@@ -1,6 +1,3 @@
-
-
-Whatsreels with attach · HTML
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -25,7 +22,7 @@ Whatsreels with attach · HTML
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#000;overflow:hidden;}
- 
+
   .app-frame{
     max-width:480px;
     height:100vh;
@@ -38,7 +35,7 @@ Whatsreels with attach · HTML
     flex-direction:column;
     overflow:hidden;
   }
- 
+
   /* ---------- Screens container ---------- */
   .screens{flex:1;position:relative;overflow:hidden;}
   .screen{
@@ -49,7 +46,7 @@ Whatsreels with attach · HTML
     transition:opacity .18s ease, transform .18s ease;
   }
   .screen.active{opacity:1; pointer-events:auto; transform:translateX(0);}
- 
+
   /* ---------- Top App Bar ---------- */
   .app-bar{
     background:var(--panel);
@@ -62,7 +59,7 @@ Whatsreels with attach · HTML
   .app-bar h1{font-size:21px;font-weight:600;}
   .app-bar-icons{display:flex;gap:20px;align-items:center;}
   .app-bar-icons svg{width:22px;height:22px;fill:var(--text);cursor:pointer;}
- 
+
   /* ---------- Chat List ---------- */
   .search-bar{
     margin:8px 12px;
@@ -79,7 +76,7 @@ Whatsreels with attach · HTML
     font-size:14px;width:100%;
   }
   .search-bar input::placeholder{color:var(--dim);}
- 
+
   .chat-list{flex:1;overflow-y:auto;}
   .chat-item{
     display:flex;
@@ -111,7 +108,7 @@ Whatsreels with attach · HTML
     display:flex;align-items:center;justify-content:center;
     padding:0 6px;
   }
- 
+
   /* FAB */
   .fab{
     position:absolute;
@@ -126,7 +123,7 @@ Whatsreels with attach · HTML
     z-index:5;
   }
   .fab svg{width:24px;height:24px;fill:#062017;}
- 
+
   /* ---------- Status Screen ---------- */
   .status-section-title{padding:14px 16px 6px;font-size:13px;color:var(--dim);font-weight:600;}
   .my-status{display:flex;align-items:center;gap:12px;padding:10px 16px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:4px;}
@@ -159,7 +156,7 @@ Whatsreels with attach · HTML
     font-weight:700;font-size:15px;color:#fff;
   }
   .status-avatar-fill{width:100%;height:100%;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;}
- 
+
   /* ---------- Chat Window ---------- */
   .chat-window-bar{
     background:var(--panel);
@@ -176,7 +173,7 @@ Whatsreels with attach · HTML
   .chat-window-status{font-size:12px;color:var(--dim);}
   .chat-window-icons{display:flex;gap:18px;}
   .chat-window-icons svg{width:20px;height:20px;fill:var(--text);}
- 
+
   .messages-area{
     flex:1;overflow-y:auto;
     padding:14px 10px;
@@ -227,24 +224,14 @@ Whatsreels with attach · HTML
   .bubble-meta svg{width:15px;height:11px;}
   .tick-seen{fill:#25D366;}
   .tick-sent{fill:rgba(233,237,239,0.6);}
- 
-  /* ================= DELETE FOR ME (per-message) ================= */
-  .msg-delete-btn{
-    width:20px;height:20px;border-radius:50%;
-    background:var(--panel-light);
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;
-    flex-shrink:0;
-    align-self:center;
-    opacity:0.7;
-    transition:opacity .15s ease, background .15s ease;
-  }
-  .msg-delete-btn:hover, .msg-delete-btn:active{opacity:1; background:var(--danger);}
-  .msg-delete-btn svg{width:11px;height:11px;fill:none;stroke:var(--text);}
-  .msg-delete-btn:hover svg, .msg-delete-btn:active svg{stroke:#fff;}
-  .msg-row.out .msg-delete-btn{margin-right:5px;}
-  .msg-row.in .msg-delete-btn{margin-left:5px;}
- 
+
+  /* ================= DELETE FOR ME / DELETE FOR EVERYONE ================= */
+  .msg-row.out{cursor:pointer;} /* tap your own message to open the delete menu */
+  .msg-row.out[data-deleted="1"]{cursor:default;}
+  .deleted-msg{display:flex; align-items:center; gap:5px; color:rgba(233,237,239,0.75);}
+  .deleted-msg-icon{width:13px;height:13px;flex-shrink:0;}
+  .deleted-msg-icon path{stroke:currentColor;}
+
   .typing-row{display:flex;justify-content:flex-start;margin:4px 0;}
   .typing-bubble{
     background:var(--bubble-in);
@@ -261,7 +248,7 @@ Whatsreels with attach · HTML
     0%,60%,100%{transform:translateY(0); opacity:.5;}
     30%{transform:translateY(-4px); opacity:1;}
   }
- 
+
   .input-bar{
     display:flex;
     align-items:flex-end;
@@ -298,7 +285,7 @@ Whatsreels with attach · HTML
     flex-shrink:0;cursor:pointer;
   }
   .send-btn svg{width:19px;height:19px;fill:#062017;margin-left:2px;}
- 
+
   /* ---------- Bottom Nav ---------- */
   .bottom-nav{
     display:flex;
@@ -329,7 +316,7 @@ Whatsreels with attach · HTML
     display:flex;align-items:center;justify-content:center;
     padding:0 4px;
   }
- 
+
   /* placeholders */
   .placeholder-screen{
     flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -337,9 +324,9 @@ Whatsreels with attach · HTML
   }
   .placeholder-screen svg{width:64px;height:64px;fill:var(--panel-light);}
   .placeholder-screen p{font-size:14px;}
- 
+
   ::-webkit-scrollbar{width:0;}
- 
+
   /* ================= REELS TAB ================= */
   .rl-feed{
     height:100%;
@@ -389,7 +376,7 @@ Whatsreels with attach · HTML
   .rl-heart-burst svg{width:100%;height:100%;fill:#ff3040;}
   .rl-toast{position:absolute;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,0.95);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:500;z-index:20;opacity:0;transition:all .25s ease;pointer-events:none;white-space:nowrap;}
   .rl-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
- 
+
   /* ================= STATUS VIEWER ================= */
   .sv-overlay{
     position:absolute; inset:0;
@@ -425,7 +412,7 @@ Whatsreels with attach · HTML
   .sv-tap-zone{position:absolute; top:0; bottom:0; width:35%; z-index:2;}
   .sv-tap-zone.left{left:0;}
   .sv-tap-zone.right{right:0;}
- 
+
   .sv-progress-row{
     display:flex; gap:4px;
     padding:10px 10px 0;
@@ -447,7 +434,7 @@ Whatsreels with attach · HTML
     animation-duration:4s;
   }
   @keyframes svFill{ from{width:0%;} to{width:100%;} }
- 
+
   .sv-header{
     display:flex; align-items:center; gap:10px;
     padding:10px 14px;
@@ -462,7 +449,7 @@ Whatsreels with attach · HTML
   .sv-name{color:#fff;font-size:14.5px;font-weight:600;}
   .sv-time{color:rgba(255,255,255,0.7);font-size:12px;}
   .sv-close{margin-left:auto;width:24px;height:24px;fill:#fff;cursor:pointer;}
- 
+
   /* ================= LOGIN / OTP ================= */
   .auth-overlay{
     position:absolute; inset:0;
@@ -596,7 +583,7 @@ Whatsreels with attach · HTML
     margin-right:8px;
   }
   @keyframes authSpin{ to{ transform:rotate(360deg); } }
- 
+
   /* ================= NEW CHAT MENU ================= */
   .nc-backdrop{
     position:absolute; inset:0;
@@ -627,7 +614,7 @@ Whatsreels with attach · HTML
   .nc-option-icon svg{width:22px;height:22px;fill:#062017;}
   .nc-option-text .title{font-size:16px;font-weight:600;color:var(--text);}
   .nc-option-text .subtitle{font-size:12.5px;color:var(--dim);margin-top:2px;}
- 
+
   /* ================= SETTINGS ================= */
   .settings-overlay{
     position:absolute; inset:0;
@@ -760,7 +747,7 @@ Whatsreels with attach · HTML
   .call-btn.cam.active svg{fill:#062017;}
   .call-incoming-actions{display:flex; gap:50px;}
   .call-incoming-actions .call-btn-label{color:#fff;font-size:12.5px;margin-top:8px;text-align:center;}
- 
+
   /* ================= ATTACH MENU ================= */
   .attach-backdrop{
     position:absolute; inset:0;
@@ -793,7 +780,7 @@ Whatsreels with attach · HTML
   .attach-option-icon svg{width:26px;height:26px;fill:#fff;}
   .attach-option span{font-size:12.5px;color:var(--text);}
   .attach-title{font-size:16px;font-weight:600;color:var(--text);}
- 
+
   /* Chat bubble media */
   .bubble-image{
     max-width:240px; max-height:280px;
@@ -830,7 +817,7 @@ Whatsreels with attach · HTML
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
   .bubble-doc-hint{font-size:11.5px; color:var(--dim); margin-top:2px;}
- 
+
   .upload-progress-row{
     display:flex; align-items:center; gap:8px;
     color:var(--dim); font-size:12.5px;
@@ -843,7 +830,7 @@ Whatsreels with attach · HTML
     animation:authSpin .7s linear infinite;
     flex-shrink:0;
   }
- 
+
   /* Fullscreen image/video viewer for tapping a bubble image */
   .media-viewer{
     position:absolute; inset:0;
@@ -864,7 +851,7 @@ Whatsreels with attach · HTML
     cursor:pointer;
   }
   .media-viewer-close svg{width:22px;height:22px;fill:#fff;}
- 
+
   /* ================= CHAT 3-DOT MENU ================= */
   .chat-menu-backdrop{
     position:absolute; inset:0;
@@ -895,7 +882,7 @@ Whatsreels with attach · HTML
   .chat-menu-item svg{width:19px;height:19px;fill:var(--dim);flex-shrink:0;}
   .chat-menu-item.danger{color:var(--danger);}
   .chat-menu-item.danger svg{fill:var(--danger);}
- 
+
   /* ================= CONTACT / GROUP INFO ================= */
   .info-overlay{
     position:absolute; inset:0;
@@ -978,7 +965,7 @@ Whatsreels with attach · HTML
     flex-shrink:0;
   }
   .info-member-name{font-size:14.5px;color:var(--text);}
- 
+
   /* ================= MEDIA / LINKS / DOCS ================= */
   .media-overlay{
     position:absolute; inset:0;
@@ -1027,7 +1014,7 @@ Whatsreels with attach · HTML
     border-bottom:1px solid rgba(255,255,255,0.06);
     cursor:pointer;
   }
- 
+
   /* ================= SEARCH IN CHAT ================= */
   .chat-search-bar{
     display:none;
@@ -1052,12 +1039,12 @@ Whatsreels with attach · HTML
 </style>
 </head>
 <body>
- 
+
 <div class="app-frame">
- 
+
   <!-- ============ AUTH FLOW (shown first, hides once logged in) ============ -->
   <div class="auth-overlay" id="authOverlay">
- 
+
     <!-- Screen 1: Phone number entry -->
     <div class="auth-screen active" data-auth="phone">
       <div class="auth-logo">
@@ -1065,19 +1052,19 @@ Whatsreels with attach · HTML
       </div>
       <div class="auth-title">WhatsReels mein swagat hai</div>
       <div class="auth-subtitle">Apna phone number daalo, hum tumhe ek OTP bhejenge verification ke liye.</div>
- 
+
       <div class="auth-error" id="phoneError"></div>
- 
+
       <div class="auth-label">PHONE NUMBER</div>
       <div class="auth-input-row">
         <input class="auth-cc" id="countryCode" value="+91" />
         <input class="auth-input" id="phoneInput" type="tel" placeholder="98765 43210" maxlength="10" inputmode="numeric" />
       </div>
       <div class="auth-hint">SMS charges apply. Standard rates.</div>
- 
+
       <button class="auth-btn" id="sendOtpBtn" style="margin-top:auto;">Next</button>
     </div>
- 
+
     <!-- Screen 2: OTP verification -->
     <div class="auth-screen" data-auth="otp">
       <div class="auth-back-link" id="backToPhone">
@@ -1086,9 +1073,9 @@ Whatsreels with attach · HTML
       </div>
       <div class="auth-title">OTP verify karo</div>
       <div class="auth-subtitle" id="otpSubtitle">Code bheja gaya hai <b style="color:var(--text)"></b> par</div>
- 
+
       <div class="auth-error" id="otpError"></div>
- 
+
       <div class="auth-otp-row">
         <input class="otp-box" maxlength="1" inputmode="numeric" data-otp-idx="0" />
         <input class="otp-box" maxlength="1" inputmode="numeric" data-otp-idx="1" />
@@ -1098,31 +1085,31 @@ Whatsreels with attach · HTML
         <input class="otp-box" maxlength="1" inputmode="numeric" data-otp-idx="5" />
       </div>
       <div class="auth-resend" id="resendOtp">OTP dobara bhejo</div>
- 
+
       <button class="auth-btn" id="verifyOtpBtn" style="margin-top:auto;">Verify &amp; Continue</button>
     </div>
- 
+
     <!-- Screen 3: Profile setup (name + photo) -->
     <div class="auth-screen" data-auth="profile">
       <div class="auth-title">Profile banao</div>
       <div class="auth-subtitle">Ye naam aur photo tumhare contacts ko dikhega.</div>
- 
+
       <div class="auth-avatar-picker" id="avatarPicker">
         <svg id="avatarPlaceholderIcon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
         <img id="avatarPreviewImg" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;" />
         <div class="edit-badge"><svg viewBox="0 0 24 24"><path d="M12 9a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM4 5l1.5-2h13L20 5h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2z"/></svg></div>
       </div>
       <input type="file" id="avatarFileInput" accept="image/*" style="display:none;" />
- 
+
       <div class="auth-label">YOUR NAME</div>
       <input class="auth-input" id="nameInput" placeholder="Example: Rabish Kumar" style="margin-bottom:28px;" maxlength="25" />
- 
+
       <button class="auth-btn" id="finishProfileBtn" style="margin-top:auto;">WhatsReels shuru karo</button>
     </div>
   </div>
- 
+
   <div class="screens" id="screens"></div>
- 
+
   <div class="bottom-nav" id="bottomNav">
     <div class="nav-item active" data-tab="chats">
       <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 5.9 2 10.7c0 2.6 1.4 4.9 3.6 6.5-.1 1.2-.6 2.7-1.5 3.8 1.7-.2 3.4-.9 4.7-1.9 1 .3 2.1.4 3.2.4 5.5 0 10-3.9 10-8.8S17.5 2 12 2z"/></svg>
@@ -1142,7 +1129,7 @@ Whatsreels with attach · HTML
       <span>Calls</span>
     </div>
   </div>
- 
+
   <div class="settings-overlay" id="settingsScreen">
     <div class="settings-bar">
       <svg id="settingsBack" viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8" stroke="currentColor" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1158,28 +1145,28 @@ Whatsreels with attach · HTML
         <div class="settings-name" id="settingsNameDisplay"></div>
         <input type="file" id="settingsAvatarInput" accept="image/*" style="display:none;" />
       </div>
- 
+
       <div class="settings-field" id="settingsEditName">
         <div class="label">Name</div>
         <div class="value" id="settingsNameField"></div>
         <div class="hint">Tap to edit</div>
       </div>
- 
+
       <div class="settings-field" id="settingsEditAbout">
         <div class="label">About</div>
         <div class="value" id="settingsAboutField"></div>
         <div class="hint">Tap to edit</div>
       </div>
- 
+
       <div class="settings-field" style="cursor:default;">
         <div class="label">Phone</div>
         <div class="value" id="settingsPhoneField"></div>
       </div>
- 
+
       <div class="settings-logout" id="settingsLogout">Logout</div>
     </div>
   </div>
- 
+
   <div class="nc-backdrop" id="newChatMenu">
     <div class="nc-sheet">
       <div class="nc-option" id="ncNewChat">
@@ -1198,7 +1185,7 @@ Whatsreels with attach · HTML
       </div>
     </div>
   </div>
- 
+
   <div class="sv-overlay" id="statusViewer">
     <div class="sv-progress-row" id="svProgressRow"></div>
     <div class="sv-header">
@@ -1219,17 +1206,17 @@ Whatsreels with attach · HTML
       <div class="sv-tap-zone right" id="svTapRight"></div>
     </div>
   </div>
- 
+
   <div class="call-overlay" id="callOverlay">
     <video class="call-remote-video" id="callRemoteVideo" autoplay playsinline></video>
     <video class="call-local-video" id="callLocalVideo" autoplay playsinline muted></video>
- 
+
     <div class="call-top">
       <div class="call-avatar-big" id="callAvatarBig"></div>
       <div class="call-name" id="callPeerName"></div>
       <div class="call-status" id="callStatusText">Calling...</div>
     </div>
- 
+
     <!-- Shown while ringing / incoming, before the call is answered -->
     <div class="call-incoming-actions" id="callIncomingActions" style="display:none;">
       <div>
@@ -1245,7 +1232,7 @@ Whatsreels with attach · HTML
         <div class="call-btn-label">Accept</div>
       </div>
     </div>
- 
+
     <!-- Shown once the call is active (or while outgoing call is ringing) -->
     <div class="call-actions" id="callActiveActions" style="display:none;">
       <div class="call-btn mute" id="callMuteBtn">
@@ -1259,7 +1246,7 @@ Whatsreels with attach · HTML
       </div>
     </div>
   </div>
- 
+
   <div class="attach-backdrop" id="attachMenu">
     <div class="attach-sheet">
       <div class="attach-title">Share</div>
@@ -1285,11 +1272,11 @@ Whatsreels with attach · HTML
       </div>
     </div>
   </div>
- 
+
   <input type="file" id="chatPhotoInput" accept="image/*" style="display:none;" />
   <input type="file" id="chatVideoInput" accept="video/*" style="display:none;" />
   <input type="file" id="chatDocInput" accept=".pdf,.doc,.docx,.txt,.xls,.xlsx,.ppt,.pptx" style="display:none;" />
- 
+
   <div class="media-viewer" id="mediaViewer">
     <div class="media-viewer-close" id="mediaViewerClose">
       <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#fff" stroke-width="2.3" fill="none" stroke-linecap="round"/></svg>
@@ -1297,7 +1284,7 @@ Whatsreels with attach · HTML
     <img id="mediaViewerImg" style="display:none;" />
     <video id="mediaViewerVideo" style="display:none;" controls playsinline></video>
   </div>
- 
+
   <div class="chat-menu-backdrop" id="chatMenuBackdrop">
     <div class="chat-menu-sheet">
       <div class="chat-menu-item" id="menuViewInfo">
@@ -1326,7 +1313,30 @@ Whatsreels with attach · HTML
       </div>
     </div>
   </div>
- 
+
+  <div class="nc-backdrop" id="msgActionBackdrop">
+    <div class="nc-sheet">
+      <div class="nc-option" id="msgActionDeleteMe">
+        <div class="nc-option-icon" style="background:var(--panel-light);">
+          <svg viewBox="0 0 24 24" style="fill:var(--text);"><path d="M6 7h12M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-8 0v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V7" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+        </div>
+        <div class="nc-option-text">
+          <div class="title">Delete for Me</div>
+          <div class="subtitle">Sirf tumhare device se hatega</div>
+        </div>
+      </div>
+      <div class="nc-option" id="msgActionDeleteEveryone">
+        <div class="nc-option-icon" style="background:var(--danger);">
+          <svg viewBox="0 0 24 24" style="fill:#fff;"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.3" fill="none" stroke-linecap="round"/></svg>
+        </div>
+        <div class="nc-option-text">
+          <div class="title">Delete for Everyone</div>
+          <div class="subtitle">Doosre insaan ko bhi "deleted" dikhega</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="info-overlay" id="infoOverlay">
     <div class="info-bar">
       <svg id="infoBack" viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8" stroke="currentColor" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1334,7 +1344,7 @@ Whatsreels with attach · HTML
     </div>
     <div class="info-body" id="infoBody"></div>
   </div>
- 
+
   <div class="media-overlay" id="mediaOverlay">
     <div class="info-bar">
       <svg id="mediaOverlayBack" viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8" stroke="currentColor" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1347,27 +1357,27 @@ Whatsreels with attach · HTML
     <div class="media-body" id="mediaBody"></div>
   </div>
 </div>
- 
+
 <script>
 /* ============ Auth state (declared first so nothing below runs into a
    "cannot access before initialization" error) ============ */
 let authToken = null;
 let currentUser = null;
 let pendingPhone = '';
- 
+
 /* ============ DUMMY DATA (replace with API calls to backend later) ============ */
 // Real chat/message data now comes from the backend (see fetchChats / openChat below).
 // These start empty and get filled in after login.
 let CHATS = [];
 let MESSAGES = {}; // keyed by chatId -> array of message objects from the backend
 const DELETED_FOR_ME = new Set(); // message IDs hidden from this device's view only (not deleted for the other person)
- 
+
 let STATUS_GROUPS = []; // filled from backend via fetchStatusFeed(); each item = {user, statuses:[...]}
 let statusFeedInitialized = false;
- 
+
 let currentChatId = null;
 let currentChatObj = null;
- 
+
 /* ============ Avatar color helper (deterministic from id/name) ============ */
 const AVATAR_PALETTE = ['#e91e63','#3f51b5','#ff9800','#4caf50','#00bcd4','#8bc34a','#ff5722','#9c27b0','#009688','#f44336'];
 function colorFromId(id){
@@ -1400,7 +1410,7 @@ function chatAvatarColor(chat){
   const other = getOtherParticipant(chat);
   return colorFromId(other ? other._id : chat._id);
 }
- 
+
 /* ============ SVG helpers ============ */
 const svgSearch = `<svg viewBox="0 0 24 24"><path d="M15.5 14h-.8l-.3-.3c1-1.1 1.6-2.6 1.6-4.2C16 6 13.3 3 9.5 3S3 6 3 9.5 6 16 9.5 16c1.6 0 3.1-.6 4.2-1.6l.3.3v.8l5 5 1.5-1.5-5-5zm-6 0C7 14 5 12 5 9.5S7 5 9.5 5 14 7 14 9.5 12 14 9.5 14z"/></svg>`;
 const svgDots = `<svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>`;
@@ -1414,12 +1424,12 @@ const svgMic = `<svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0
 const svgSend = `<svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>`;
 const svgCheck1 = `<svg viewBox="0 0 16 11" class="tick-sent"><path d="M1 5.5L5 9.5L11 1.5" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>`;
 const svgCheck2 = `<svg viewBox="0 0 16 11" class="tick-seen"><path d="M1 5.5L5 9.5L11 1.5" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M5 5.5L9 9.5L15 1.5" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>`;
- 
+
 function initials(name){ return name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
- 
+
 /* ============ Build Screens ============ */
 const screensEl = document.getElementById('screens');
- 
+
 function buildChatsScreen(){
   const rows = CHATS.length ? CHATS.map(c => {
     const name = chatDisplayName(c);
@@ -1450,7 +1460,7 @@ function buildChatsScreen(){
     </div>
   `;
   }).join('') : `<div class="placeholder-screen"><p>Koi chat nahi hai abhi.<br>Neeche + button se naya chat shuru karo.</p></div>`;
- 
+
   return `
     <div class="screen" data-screen="chats">
       <div class="app-bar">
@@ -1463,20 +1473,20 @@ function buildChatsScreen(){
     </div>
   `;
 }
- 
+
 function buildStatusScreen(){
   const myId = currentUser ? currentUser.id : null;
   const myGroup = STATUS_GROUPS.find(g => g.user._id === myId);
   const otherGroups = STATUS_GROUPS.filter(g => g.user._id !== myId);
- 
+
   const myAvatarHtml = (currentUser && currentUser.profilePhoto)
     ? `<img src="${currentUser.profilePhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />`
     : `<span style="font-size:13px;color:var(--dim)">You</span>`;
- 
+
   const myStatusPreview = myGroup
     ? `${myGroup.statuses.length} update${myGroup.statuses.length > 1 ? 's' : ''} - tap to view`
     : 'Tap to add status update';
- 
+
   const rows = otherGroups.map((g) => {
     const allSeen = g.statuses.every(s => s.viewers && s.viewers.some(v => (v.user._id || v.user) === myId));
     const latest = g.statuses[0];
@@ -1496,7 +1506,7 @@ function buildStatusScreen(){
     </div>
   `;
   }).join('');
- 
+
   return `
     <div class="screen" data-screen="status">
       <div class="app-bar"><h1>Status</h1><div class="app-bar-icons">${svgDots}</div></div>
@@ -1516,7 +1526,7 @@ function buildStatusScreen(){
     </div>
   `;
 }
- 
+
 async function fetchStatusFeed(){
   try {
     const res = await fetch(`${API_BASE}/status`, {
@@ -1536,7 +1546,7 @@ async function fetchStatusFeed(){
     console.log('Could not fetch status feed:', err);
   }
 }
- 
+
 function buildCallsScreen(){
   return `
     <div class="screen" data-screen="calls">
@@ -1548,9 +1558,9 @@ function buildCallsScreen(){
     </div>
   `;
 }
- 
+
 let REELS_DATA = []; // filled from the backend via fetchReelsFeed()
- 
+
 function rlHeartSVG(){return `<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.3C.6 8.3 2.1 5 5.6 5c2 0 3.5 1.1 4.4 2.6C10.9 6.1 12.4 5 14.4 5 17.9 5 19.4 8.3 22 11.7 19.5 16.4 12 21 12 21z"/></svg>`;}
 function rlHeartFilledSVG(){return `<svg viewBox="0 0 24 24" style="fill:#ff3040;stroke:none;"><path d="M12 21s-7.5-4.6-10-9.3C.6 8.3 2.1 5 5.6 5c2 0 3.5 1.1 4.4 2.6C10.9 6.1 12.4 5 14.4 5 17.9 5 19.4 8.3 22 11.7 19.5 16.4 12 21 12 21z"/></svg>`;}
 function rlCommentSVG(){return `<svg viewBox="0 0 24 24" style="fill:#fff;stroke:none;"><path d="M12 2C6.5 2 2 5.9 2 10.7c0 2.6 1.4 4.9 3.6 6.5-.1 1.2-.6 2.7-1.5 3.8 1.7-.2 3.4-.9 4.7-1.9 1 .3 2.1.4 3.2.4 5.5 0 10-3.9 10-8.8S17.5 2 12 2z"/></svg>`;}
@@ -1562,7 +1572,7 @@ function rlPauseSVG(){return `<svg viewBox="0 0 24 24" style="fill:rgba(255,255,
 function rlCamSVG(){return `<svg viewBox="0 0 24 24"><path d="M12 9a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM4 5l1.5-2h13L20 5h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2z"/></svg>`;}
 function rlPlusSVG(){return `<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`;}
 function rlFormatCount(n){ if(n>=1000) return (n/1000).toFixed(1).replace('.0','')+'K'; return n; }
- 
+
 function buildReelsScreen(){
   const reelsHtml = REELS_DATA.length ? REELS_DATA.map((r) => {
     const uploaderName = r.user ? r.user.name : 'Unknown';
@@ -1601,7 +1611,7 @@ function buildReelsScreen(){
       <p>Koi Reel nahi hai abhi.<br>Upar + button se pehla Reel upload karo!</p>
     </div>
   `;
- 
+
   return `
     <div class="screen" data-screen="reels">
       <div class="rl-feed" id="rlFeed">${reelsHtml}</div>
@@ -1610,7 +1620,7 @@ function buildReelsScreen(){
     </div>
   `;
 }
- 
+
 /* ============ Fetch real reels feed from backend ============ */
 async function fetchReelsFeed(){
   try {
@@ -1630,7 +1640,7 @@ async function fetchReelsFeed(){
   }
   initReelsBehavior();
 }
- 
+
 /* ============ Upload a new Reel (real video file -> backend) ============ */
 async function uploadNewReel(){
   const input = document.createElement('input');
@@ -1639,7 +1649,7 @@ async function uploadNewReel(){
   input.onchange = async () => {
     const file = input.files[0];
     if (!file) return;
- 
+
     if (!file.type.startsWith('video/')) {
       alert('Sirf video file select karo.');
       return;
@@ -1648,9 +1658,9 @@ async function uploadNewReel(){
       alert('Video 6MB se chhota hona chahiye (chhota clip try karo, 5-10 second ka).');
       return;
     }
- 
+
     const caption = prompt('Reel ka caption likho (optional):', '') || '';
- 
+
     const reader = new FileReader();
     reader.onload = async (e) => {
       const videoDataUrl = e.target.result;
@@ -1680,7 +1690,7 @@ async function uploadNewReel(){
   };
   input.click();
 }
- 
+
 function initReelsBehavior(){
   const videos = document.querySelectorAll('.rl-reel video');
   const observer = new IntersectionObserver((entries)=>{
@@ -1694,7 +1704,7 @@ function initReelsBehavior(){
     });
   }, { threshold:[0,0.6,1], root: document.getElementById('rlFeed') });
   videos.forEach(v => observer.observe(v));
- 
+
   videos.forEach(video=>{
     const reel = video.closest('.rl-reel');
     const bar = reel.querySelector('.rl-progress-bar');
@@ -1702,7 +1712,7 @@ function initReelsBehavior(){
       if(video.duration) bar.style.width = (video.currentTime/video.duration*100)+'%';
     });
   });
- 
+
   const toast = document.getElementById('rlToast');
   let toastTimer;
   function showRlToast(msg){
@@ -1712,11 +1722,11 @@ function initReelsBehavior(){
     clearTimeout(toastTimer);
     toastTimer = setTimeout(()=> toast.classList.remove('show'), 1600);
   }
- 
+
   document.querySelectorAll('#rlUploadBtn, #rlUploadBtnEmpty').forEach(btn => {
     btn.addEventListener('click', (e) => { e.stopPropagation(); uploadNewReel(); });
   });
- 
+
   document.querySelectorAll('.rl-reel').forEach(reel=>{
     const reelId = reel.dataset.reelId;
     const video = reel.querySelector('video');
@@ -1725,7 +1735,7 @@ function initReelsBehavior(){
     const likeBtn = reel.querySelector('.rl-like-btn');
     const likeCount = reel.querySelector('.rl-like-count');
     let lastTap = 0;
- 
+
     reel.addEventListener('click', (e)=>{
       if(e.target.closest('.rl-actions') || e.target.closest('#rlUploadBtn')) return;
       const now = Date.now();
@@ -1746,14 +1756,14 @@ function initReelsBehavior(){
       }
       lastTap = now;
     });
- 
+
     likeBtn.addEventListener('click', (e)=>{ e.stopPropagation(); toggleReelLike(reelId, likeBtn, likeCount); });
- 
+
     reel.querySelector('.rl-comment-btn').addEventListener('click', (e)=>{
       e.stopPropagation();
       openReelComments(reelId);
     });
- 
+
     reel.querySelector('.rl-share-btn').addEventListener('click', async (e)=>{
       e.stopPropagation();
       try {
@@ -1764,7 +1774,7 @@ function initReelsBehavior(){
         if (res.ok) showRlToast('✅ Reel shared');
       } catch (err) { /* silent */ }
     });
- 
+
     reel.querySelector('.rl-save-btn').addEventListener('click', async (e)=>{
       e.stopPropagation();
       const svg = e.currentTarget.querySelector('svg');
@@ -1782,7 +1792,7 @@ function initReelsBehavior(){
     });
   });
 }
- 
+
 async function toggleReelLike(reelId, likeBtn, likeCountEl){
   try {
     const res = await fetch(`${API_BASE}/reels/${reelId}/like`, {
@@ -1796,7 +1806,7 @@ async function toggleReelLike(reelId, likeBtn, likeCountEl){
     }
   } catch (err) { /* silent */ }
 }
- 
+
 async function openReelComments(reelId){
   const text = prompt('Comment likho:');
   if (!text || !text.trim()) return;
@@ -1817,7 +1827,7 @@ async function openReelComments(reelId){
     }
   } catch (err) { /* silent */ }
 }
- 
+
 function buildChatWindowScreen(){
   return `
     <div class="screen" data-screen="chatwindow" id="chatWindowScreen">
@@ -1852,16 +1862,16 @@ function buildChatWindowScreen(){
     </div>
   `;
 }
- 
+
 screensEl.innerHTML =
   buildChatsScreen() +
   buildStatusScreen() +
   buildCallsScreen() +
   buildReelsScreen() +
   buildChatWindowScreen();
- 
+
 document.querySelector('[data-screen="chats"]').classList.add('active');
- 
+
 /* ============ Bottom Nav Switching ============ */
 let reelsInitialized = false;
 let statusInitialized = false;
@@ -1873,7 +1883,7 @@ navItems.forEach(item => {
     const tab = item.dataset.tab;
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.querySelector(`[data-screen="${tab}"]`).classList.add('active');
- 
+
     if (tab === 'reels' && !reelsInitialized) {
       fetchReelsFeed();
       reelsInitialized = true;
@@ -1884,16 +1894,16 @@ navItems.forEach(item => {
     }
   });
 });
- 
+
 /* ============ Open Chat Window (real backend) ============ */
 async function openChat(chatId){
   currentChatId = chatId;
   currentChatObj = CHATS.find(c => c._id === chatId);
   if (!currentChatObj) return;
- 
+
   // reading the chat clears its unread badge
   currentChatObj.unreadCount = 0;
- 
+
   const name = chatDisplayName(currentChatObj);
   const color = chatAvatarColor(currentChatObj);
   document.getElementById('cwAvatar').style.background = color;
@@ -1903,17 +1913,17 @@ async function openChat(chatId){
   document.getElementById('cwStatus').textContent = currentChatObj.isGroupChat
     ? 'tap for group info'
     : (other && other.isOnline ? 'online' : 'tap for contact info');
- 
+
   document.getElementById('bottomNav').style.display = 'none';
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('chatWindowScreen').classList.add('active');
   document.getElementById('chatSearchBar').classList.remove('active');
- 
+
   document.getElementById('messagesArea').innerHTML = `<div class="date-chip">Loading...</div>`;
- 
+
   // join this chat's socket room so we get real-time messages while it's open
   if (socket) socket.emit('join-chat', chatId);
- 
+
   try {
     const res = await fetch(`${API_BASE}/messages/${chatId}`, {
       headers: { Authorization: `Bearer ${authToken}` },
@@ -1923,9 +1933,9 @@ async function openChat(chatId){
   } catch (err) {
     MESSAGES[chatId] = [];
   }
- 
+
   renderMessages(chatId);
- 
+
   // mark as seen (blue tick for the other person)
   try {
     await fetch(`${API_BASE}/messages/${chatId}/seen`, {
@@ -1934,16 +1944,16 @@ async function openChat(chatId){
     });
     if (socket) socket.emit('message-seen', { chatId, seenBy: currentUser.id });
   } catch (err) { /* non-critical */ }
- 
+
   // Backup polling: check for new messages every 2 seconds while this chat is
   // open. This guarantees delivery even if the live socket push doesn't land,
   // without needing to leave and reopen the chat.
   clearInterval(chatPollTimer);
   chatPollTimer = setInterval(() => pollForNewMessages(chatId), 2000);
 }
- 
+
 let chatPollTimer = null;
- 
+
 async function pollForNewMessages(chatId){
   if (currentChatId !== chatId) return; // chat was closed, stop caring
   try {
@@ -1952,16 +1962,16 @@ async function pollForNewMessages(chatId){
     });
     if (!res.ok) return;
     const freshMsgs = (await res.json()).filter(m => !DELETED_FOR_ME.has(m._id));
- 
+
     const existingIds = new Set((MESSAGES[chatId] || []).map(m => m._id));
     const newOnes = freshMsgs.filter(m => !existingIds.has(m._id));
- 
+
     // also pick up any seen-status changes on existing messages (tick color)
     const seenChanged = freshMsgs.some(fm => {
       const local = (MESSAGES[chatId] || []).find(m => m._id === fm._id);
       return local && (local.seenBy || []).length !== (fm.seenBy || []).length;
     });
- 
+
     if (newOnes.length > 0 || seenChanged) {
       MESSAGES[chatId] = freshMsgs;
       renderMessages(chatId);
@@ -1970,7 +1980,7 @@ async function pollForNewMessages(chatId){
         if (chatInList) chatInList.lastMessage = freshMsgs[freshMsgs.length - 1];
       }
     }
- 
+
     // If any of the new messages were sent by the OTHER person, mark them
     // seen now (this is what makes the sender's tick turn green).
     const hasIncoming = newOnes.some(m => m.sender._id !== currentUser.id);
@@ -1983,18 +1993,16 @@ async function pollForNewMessages(chatId){
     }
   } catch (err) { /* silent - will retry on next tick */ }
 }
- 
+
 function docExtIcon(){
   return `<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM13 9V3.5L18.5 9H13z"/></svg>`;
 }
- 
+
 function renderMessages(chatId){
   const msgs = (MESSAGES[chatId] || []).filter(m => !DELETED_FOR_ME.has(m._id));
   const area = document.getElementById('messagesArea');
   let html = `<div class="date-chip">TODAY</div>`;
- 
-  const svgDeleteX = `<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>`;
- 
+
   msgs.forEach(m => {
     const isOut = m.sender._id === currentUser.id;
     const other = getOtherParticipant(currentChatObj);
@@ -2002,10 +2010,10 @@ function renderMessages(chatId){
     const tick = isOut ? (seenByOther ? svgCheck2 : svgCheck1) : '';
     const senderLabel = (!isOut && currentChatObj.isGroupChat)
       ? `<b style="color:${colorFromId(m.sender._id)}">${m.sender.name}</b><br>` : '';
- 
+
     let bodyHtml;
     if (m.isDeletedForEveryone) {
-      bodyHtml = `<span class="bubble-text"><i>This message was deleted</i></span>`;
+      bodyHtml = `<span class="bubble-text deleted-msg"><svg viewBox="0 0 24 24" class="deleted-msg-icon"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg><i>This message was deleted</i></span>`;
     } else if (m.messageType === 'image') {
       bodyHtml = `<img class="bubble-image" src="${m.content}" data-view-media="image" data-media-src="${m.content}" />`;
     } else if (m.messageType === 'video') {
@@ -2023,38 +2031,23 @@ function renderMessages(chatId){
     } else {
       bodyHtml = `<span class="bubble-text">${senderLabel}${escapeHtml(m.content)}</span>`;
     }
- 
-    const bubbleHtml = `
+
+    html += `
+      <div class="msg-row ${isOut ? 'out' : 'in'}" data-msg-id="${m._id}" data-deleted="${m.isDeletedForEveryone ? '1' : '0'}">
         <div class="bubble">
           ${bodyHtml}
           <span class="bubble-meta">${formatTime(m.createdAt)} ${tick}</span>
         </div>
-    `;
-    const deleteBtnHtml = `<span class="msg-delete-btn" data-delete-msg="${m._id}" title="Delete for me">${svgDeleteX}</span>`;
- 
-    html += `
-      <div class="msg-row ${isOut ? 'out' : 'in'}">
-        ${isOut ? deleteBtnHtml : ''}
-        ${bubbleHtml}
-        ${!isOut ? deleteBtnHtml : ''}
       </div>
     `;
   });
   area.innerHTML = html;
   area.scrollTop = area.scrollHeight;
- 
-  // Tap the small round X beside a message to delete it for me only - the
-  // other person's WhatsApp/chat keeps their copy untouched.
-  area.querySelectorAll('[data-delete-msg]').forEach(el => {
-    el.addEventListener('click', (e) => {
-      e.stopPropagation();
-      deleteMessageForMe(el.dataset.deleteMsg);
-    });
-  });
- 
+
   // Tap an image/video bubble to open it fullscreen
   area.querySelectorAll('[data-view-media]').forEach(el => {
-    el.addEventListener('click', () => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
       const src = el.dataset.mediaSrc;
       const type = el.dataset.viewMedia;
       const imgEl = document.getElementById('mediaViewerImg');
@@ -2069,26 +2062,36 @@ function renderMessages(chatId){
       document.getElementById('mediaViewer').classList.add('open');
     });
   });
- 
+
   // Tap a document bubble to open/download it in a new tab
   area.querySelectorAll('[data-open-doc]').forEach(el => {
-    el.addEventListener('click', () => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
       window.open(el.dataset.openDoc, '_blank');
     });
   });
 }
- 
+
 document.getElementById('mediaViewerClose').addEventListener('click', () => {
   document.getElementById('mediaViewer').classList.remove('open');
   document.getElementById('mediaViewerVideo').pause();
 });
- 
+
+// Tap on any message YOU sent to open the Delete for me / Delete for
+// everyone menu. Received messages and already-deleted messages don't open
+// this menu.
+document.getElementById('messagesArea').addEventListener('click', (e) => {
+  const row = e.target.closest('.msg-row.out');
+  if (!row || row.dataset.deleted === '1') return;
+  openMessageActionSheet(row.dataset.msgId);
+});
+
 function escapeHtml(str){
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
 }
- 
+
 document.addEventListener('click', (e) => {
   const chatTrigger = e.target.closest('[data-open-chat]');
   if (chatTrigger) {
@@ -2114,13 +2117,13 @@ document.addEventListener('click', (e) => {
     openSettingsScreen();
   }
 });
- 
+
 document.addEventListener('change', (e) => {
   if (e.target.id === 'statusFileInput') {
     uploadNewStatus(e.target.files[0]);
   }
 });
- 
+
 async function uploadNewStatus(file){
   if (!file) return;
   if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
@@ -2131,7 +2134,7 @@ async function uploadNewStatus(file){
     alert('File 6MB se choti honi chahiye.');
     return;
   }
- 
+
   const reader = new FileReader();
   reader.onload = async (e) => {
     const dataUrl = e.target.result;
@@ -2154,10 +2157,10 @@ async function uploadNewStatus(file){
   };
   reader.readAsDataURL(file);
 }
- 
+
 /* ============ Settings screen ============ */
 document.getElementById('settingsBack').addEventListener('click', closeSettingsScreen);
- 
+
 function openSettingsScreen(){
   document.getElementById('settingsAvatarInitials').style.display = currentUser.profilePhoto ? 'none' : 'block';
   document.getElementById('settingsAvatarInitials').textContent = initials(currentUser.name || 'You');
@@ -2172,18 +2175,18 @@ function openSettingsScreen(){
   document.getElementById('settingsNameField').textContent = currentUser.name;
   document.getElementById('settingsAboutField').textContent = currentUser.about || 'Hey there! I am using WhatsReels';
   document.getElementById('settingsPhoneField').textContent = currentUser.phoneNumber || '';
- 
+
   document.getElementById('settingsScreen').classList.add('open');
 }
- 
+
 function closeSettingsScreen(){
   document.getElementById('settingsScreen').classList.remove('open');
 }
- 
+
 document.getElementById('settingsAvatarPicker').addEventListener('click', () => {
   document.getElementById('settingsAvatarInput').click();
 });
- 
+
 document.getElementById('settingsAvatarInput').addEventListener('change', async (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -2195,7 +2198,7 @@ document.getElementById('settingsAvatarInput').addEventListener('change', async 
     alert('Photo 5MB se choti honi chahiye.');
     return;
   }
- 
+
   const reader = new FileReader();
   reader.onload = async (ev) => {
     const dataUrl = ev.target.result;
@@ -2219,11 +2222,11 @@ document.getElementById('settingsAvatarInput').addEventListener('change', async 
   };
   reader.readAsDataURL(file);
 });
- 
+
 document.getElementById('settingsEditName').addEventListener('click', async () => {
   const newName = prompt('Naya naam daalo:', currentUser.name);
   if (!newName || !newName.trim() || newName.trim() === currentUser.name) return;
- 
+
   try {
     const res = await fetch(`${API_BASE}/auth/complete-profile`, {
       method: 'PUT',
@@ -2241,11 +2244,11 @@ document.getElementById('settingsEditName').addEventListener('click', async () =
     alert('Backend se connect nahi ho paya.');
   }
 });
- 
+
 document.getElementById('settingsEditAbout').addEventListener('click', async () => {
   const newAbout = prompt('Naya about text daalo:', currentUser.about || '');
   if (newAbout === null) return;
- 
+
   try {
     const res = await fetch(`${API_BASE}/auth/complete-profile`, {
       method: 'PUT',
@@ -2263,10 +2266,10 @@ document.getElementById('settingsEditAbout').addEventListener('click', async () 
     alert('Backend se connect nahi ho paya.');
   }
 });
- 
+
 document.getElementById('settingsLogout').addEventListener('click', () => {
   if (!confirm('Kya tum logout karna chahte ho?')) return;
- 
+
   if (socket) socket.disconnect();
   authToken = null;
   currentUser = null;
@@ -2276,13 +2279,13 @@ document.getElementById('settingsLogout').addEventListener('click', () => {
   REELS_DATA = [];
   reelsInitialized = false;
   statusInitialized = false;
- 
+
   closeSettingsScreen();
   document.getElementById('authOverlay').classList.remove('hidden');
   showAuthScreen('phone');
   document.getElementById('phoneInput').value = '';
 });
- 
+
 document.getElementById('newChatMenu').addEventListener('click', (e) => {
   if (e.target.id === 'newChatMenu' || e.target.classList.contains('nc-backdrop')) {
     document.getElementById('newChatMenu').classList.remove('open');
@@ -2296,7 +2299,7 @@ document.getElementById('ncNewGroup').addEventListener('click', () => {
   document.getElementById('newChatMenu').classList.remove('open');
   startNewGroup();
 });
- 
+
 document.getElementById('backFromChat').addEventListener('click', () => {
   if (socket && currentChatId) socket.emit('leave-chat', currentChatId);
   clearInterval(chatPollTimer);
@@ -2308,35 +2311,35 @@ document.getElementById('backFromChat').addEventListener('click', () => {
   currentChatId = null;
   currentChatObj = null;
 });
- 
+
 /* ============ Start a new chat with a friend (search by phone number) ============ */
 async function startNewChat(){
   const phone = prompt('Apne friend ka phone number daalo (jaise +919876543210):', '+91');
   if (!phone) return;
- 
+
   try {
     const searchRes = await fetch(`${API_BASE}/users/search?phone=${encodeURIComponent(phone.trim())}`, {
       headers: { Authorization: `Bearer ${authToken}` },
     });
     const foundUser = await searchRes.json();
- 
+
     if (!searchRes.ok) {
       alert(foundUser.message || 'User nahi mila.');
       return;
     }
- 
+
     const chatRes = await fetch(`${API_BASE}/chats`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },
       body: JSON.stringify({ userId: foundUser._id }),
     });
     const chat = await chatRes.json();
- 
+
     if (!chatRes.ok) {
       alert(chat.message || 'Chat start nahi ho payi.');
       return;
     }
- 
+
     // add to local list if it's not already there, then open it
     if (!CHATS.find(c => c._id === chat._id)) {
       CHATS.unshift(chat);
@@ -2347,30 +2350,30 @@ async function startNewChat(){
     alert('Backend se connect nahi ho paya. Server check karo.');
   }
 }
- 
+
 /* ============ Start a new group chat (search & add multiple friends) ============ */
 async function startNewGroup(){
   const groupName = prompt('Group ka naam daalo (jaise "Coding Squad"):');
   if (!groupName || !groupName.trim()) return;
- 
+
   const memberIds = [];
   const memberNames = [];
- 
+
   alert('Ab members add karo, ek-ek karke. Kam se kam 2 members chahiye. Khaali chhod ke "OK" dabaoge toh add karna ruk jayega.');
- 
+
   while (true) {
     const phone = prompt(
       `Member ${memberIds.length + 1} ka phone number daalo${memberNames.length ? '\n\nAb tak add: ' + memberNames.join(', ') : ''}\n(khaali chhodke OK dabao jab add karna khatam ho)`,
       '+91'
     );
     if (!phone || !phone.trim() || phone.trim() === '+91') break;
- 
+
     try {
       const searchRes = await fetch(`${API_BASE}/users/search?phone=${encodeURIComponent(phone.trim())}`, {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       const foundUser = await searchRes.json();
- 
+
       if (!searchRes.ok) {
         alert(foundUser.message || 'User nahi mila, dobara try karo.');
         continue;
@@ -2379,7 +2382,7 @@ async function startNewGroup(){
         alert('Ye member already add hai.');
         continue;
       }
- 
+
       memberIds.push(foundUser._id);
       memberNames.push(foundUser.name);
     } catch (err) {
@@ -2387,12 +2390,12 @@ async function startNewGroup(){
       return;
     }
   }
- 
+
   if (memberIds.length < 2) {
     alert('Group banane ke liye kam se kam 2 members chahiye. Dobara try karo.');
     return;
   }
- 
+
   try {
     const res = await fetch(`${API_BASE}/chats/group`, {
       method: 'POST',
@@ -2400,12 +2403,12 @@ async function startNewGroup(){
       body: JSON.stringify({ groupName: groupName.trim(), participants: memberIds }),
     });
     const group = await res.json();
- 
+
     if (!res.ok) {
       alert(group.message || 'Group ban nahi paya.');
       return;
     }
- 
+
     CHATS.unshift(group);
     refreshChatsScreen();
     openChat(group._id);
@@ -2413,7 +2416,7 @@ async function startNewGroup(){
     alert('Backend se connect nahi ho paya. Server check karo.');
   }
 }
- 
+
 function refreshChatsScreen(){
   const oldScreen = document.querySelector('[data-screen="chats"]');
   if (!oldScreen) return;
@@ -2421,50 +2424,50 @@ function refreshChatsScreen(){
   oldScreen.outerHTML = buildChatsScreen();
   if (wasActive) document.querySelector('[data-screen="chats"]').classList.add('active');
 }
- 
+
 /* ============ Status Story Viewer ============ */
 let svGroup = null;    // the {user, statuses} group currently being viewed
 let svIndex = 0;
 let svTimer = null;
 const SV_DURATION = 5000; // 5 seconds per status (images); videos use their own length
- 
+
 function openStatusViewer(userId){
   svGroup = STATUS_GROUPS.find(g => g.user._id === userId);
   if (!svGroup || !svGroup.statuses.length) return;
   svIndex = 0;
- 
+
   const overlay = document.getElementById('statusViewer');
   const progressRow = document.getElementById('svProgressRow');
   progressRow.innerHTML = svGroup.statuses.map((_, i) => `<div class="sv-progress-seg" data-seg="${i}"><div class="sv-progress-fill"></div></div>`).join('');
- 
+
   overlay.classList.add('open');
   document.getElementById('bottomNav').style.display = 'none';
   renderStatusSlide();
 }
- 
+
 function renderStatusSlide(){
   const s = svGroup.statuses[svIndex];
   if (!s) { closeStatusViewer(); return; }
- 
+
   const initialsColor = colorFromId(svGroup.user._id);
   document.getElementById('svAvatar').style.background = initialsColor;
   document.getElementById('svAvatar').textContent = initials(svGroup.user.name);
   document.getElementById('svName').textContent = svGroup.user.name;
   document.getElementById('svTime').textContent = formatTime(s.createdAt);
- 
+
   const imgEl = document.getElementById('svImage');
   const videoEl = document.getElementById('svVideo');
   const captionEl = document.getElementById('svCaption');
   const bgEl = document.getElementById('svBg');
- 
+
   imgEl.style.display = 'none';
   videoEl.pause();
   videoEl.style.display = 'none';
   captionEl.textContent = '';
   bgEl.style.background = 'transparent';
- 
+
   clearTimeout(svTimer);
- 
+
   if (s.type === 'image') {
     imgEl.src = s.content;
     imgEl.style.display = 'block';
@@ -2483,7 +2486,7 @@ function renderStatusSlide(){
     svTimer = setTimeout(() => nextStatus(), SV_DURATION);
     startProgressAnim(SV_DURATION);
   }
- 
+
   // mark viewed on the backend (only matters for other people's statuses)
   if (svGroup.user._id !== currentUser.id) {
     fetch(`${API_BASE}/status/${s._id}/view`, {
@@ -2496,7 +2499,7 @@ function renderStatusSlide(){
     }
   }
 }
- 
+
 function startProgressAnim(durationMs){
   const segs = document.querySelectorAll('.sv-progress-seg');
   segs.forEach((seg, i) => {
@@ -2510,7 +2513,7 @@ function startProgressAnim(durationMs){
     }
   });
 }
- 
+
 function nextStatus(){
   if (svIndex < svGroup.statuses.length - 1) {
     svIndex++;
@@ -2519,14 +2522,14 @@ function nextStatus(){
     closeStatusViewer();
   }
 }
- 
+
 function prevStatus(){
   if (svIndex > 0) {
     svIndex--;
     renderStatusSlide();
   }
 }
- 
+
 function closeStatusViewer(){
   clearTimeout(svTimer);
   document.getElementById('svVideo').pause();
@@ -2538,34 +2541,34 @@ function closeStatusViewer(){
   oldScreen.outerHTML = buildStatusScreen();
   if (wasActive) document.querySelector('[data-screen="status"]').classList.add('active');
 }
- 
+
 document.getElementById('svTapRight').addEventListener('click', nextStatus);
 document.getElementById('svTapLeft').addEventListener('click', prevStatus);
 document.getElementById('svClose').addEventListener('click', closeStatusViewer);
- 
+
 /* ============ Send message (local demo — backend wiring goes here) ============ */
 const msgInput = document.getElementById('msgInput');
 const sendBtn = document.getElementById('sendBtn');
- 
+
 function updateSendBtnIcon(){
   const hasText = msgInput.value.trim().length > 0;
   sendBtn.innerHTML = hasText ? svgSend : svgMic;
 }
- 
+
 msgInput.addEventListener('input', () => {
   msgInput.style.height = 'auto';
   msgInput.style.height = Math.min(msgInput.scrollHeight, 90) + 'px';
   updateSendBtnIcon();
 });
- 
+
 async function sendCurrentMessage(){
   const text = msgInput.value.trim();
   if (!text || !currentChatId) return;
- 
+
   msgInput.value = '';
   msgInput.style.height = 'auto';
   updateSendBtnIcon();
- 
+
   try {
     const res = await fetch(`${API_BASE}/messages`, {
       method: 'POST',
@@ -2573,22 +2576,22 @@ async function sendCurrentMessage(){
       body: JSON.stringify({ chatId: currentChatId, content: text, messageType: 'text' }),
     });
     const savedMessage = await res.json();
- 
+
     if (!res.ok) {
       alert(savedMessage.message || 'Message bhej nahi paya.');
       return;
     }
- 
+
     MESSAGES[currentChatId] = MESSAGES[currentChatId] || []; 
     MESSAGES[currentChatId].push(savedMessage);
     renderMessages(currentChatId);
- 
+
     // update chat list preview locally
     if (currentChatObj) {
       currentChatObj.lastMessage = savedMessage;
       currentChatObj.updatedAt = savedMessage.createdAt;
     }
- 
+
     // notify the other participant instantly via Socket.io
     if (socket && currentChatObj) {
       socket.emit('new-message', { ...savedMessage, chat: currentChatObj });
@@ -2597,7 +2600,7 @@ async function sendCurrentMessage(){
     alert('Backend se connect nahi ho paya. Message save nahi hua.');
   }
 }
- 
+
 sendBtn.addEventListener('click', sendCurrentMessage);
 msgInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && !e.shiftKey) {
@@ -2605,7 +2608,7 @@ msgInput.addEventListener('keydown', (e) => {
     sendCurrentMessage();
   }
 });
- 
+
 // typing indicator - tell the other person while we type
 let typingTimeout;
 msgInput.addEventListener('input', () => {
@@ -2614,7 +2617,7 @@ msgInput.addEventListener('input', () => {
   clearTimeout(typingTimeout);
   typingTimeout = setTimeout(() => socket.emit('stop-typing', currentChatId), 1500);
 });
- 
+
 function showTyping(){
   const area = document.getElementById('messagesArea');
   if (document.getElementById('typingRow')) return;
@@ -2629,7 +2632,7 @@ function hideTyping(){
   const row = document.getElementById('typingRow');
   if (row) row.remove();
 }
- 
+
 /* ================= WEBRTC VOICE/VIDEO CALLS ================= */
 let localStream = null;
 let peerConnection = null;
@@ -2639,18 +2642,18 @@ let isCaller = false;
 let pendingOffer = null;        // stored offer while showing incoming-call UI
 let micMuted = false;
 let camOff = false;
- 
+
 const ICE_SERVERS = {
   iceServers: [
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },
   ],
 };
- 
+
 function getCallOtherParticipant(){
   return getOtherParticipant(currentChatObj);
 }
- 
+
 function openCallOverlay(){
   document.getElementById('callOverlay').classList.add('open');
 }
@@ -2663,7 +2666,7 @@ function closeCallOverlay(){
   document.getElementById('callRemoteVideo').srcObject = null;
   document.getElementById('callLocalVideo').srcObject = null;
 }
- 
+
 function setCallHeaderInfo(user, statusText){
   const nameEl = document.getElementById('callPeerName');
   const avatarEl = document.getElementById('callAvatarBig');
@@ -2673,7 +2676,7 @@ function setCallHeaderInfo(user, statusText){
   avatarEl.textContent = initials(user ? user.name : '?');
   statusEl.textContent = statusText;
 }
- 
+
 async function startCall(callType){
   const other = getCallOtherParticipant();
   if (!other) return;
@@ -2681,17 +2684,17 @@ async function startCall(callType){
     alert('Group calls are not supported yet - only 1-to-1 calls.');
     return;
   }
- 
+
   currentCallPeerId = other._id;
   currentCallType = callType;
   isCaller = true;
- 
+
   setCallHeaderInfo(other, 'Calling...');
   document.getElementById('callIncomingActions').style.display = 'none';
   document.getElementById('callActiveActions').style.display = 'flex';
   document.getElementById('callCamBtn').style.display = callType === 'video' ? 'flex' : 'none';
   openCallOverlay();
- 
+
   try {
     localStream = await navigator.mediaDevices.getUserMedia({
       audio: true,
@@ -2702,19 +2705,19 @@ async function startCall(callType){
     closeCallOverlay();
     return;
   }
- 
+
   if (callType === 'video') {
     const localVideo = document.getElementById('callLocalVideo');
     localVideo.srcObject = localStream;
     localVideo.classList.add('show');
   }
- 
+
   peerConnection = createPeerConnection();
   localStream.getTracks().forEach((track) => peerConnection.addTrack(track, localStream));
- 
+
   const offer = await peerConnection.createOffer();
   await peerConnection.setLocalDescription(offer);
- 
+
   socket.emit('call-user', {
     to: currentCallPeerId,
     from: currentUser.id,
@@ -2722,32 +2725,32 @@ async function startCall(callType){
     callType,
   });
 }
- 
+
 function createPeerConnection(){
   const pc = new RTCPeerConnection(ICE_SERVERS);
- 
+
   pc.onicecandidate = (event) => {
     if (event.candidate && currentCallPeerId) {
       socket.emit('ice-candidate', { to: currentCallPeerId, candidate: event.candidate });
     }
   };
- 
+
   pc.ontrack = (event) => {
     const remoteVideo = document.getElementById('callRemoteVideo');
     remoteVideo.srcObject = event.streams[0];
     if (currentCallType === 'video') remoteVideo.classList.add('show');
     document.getElementById('callStatusText').textContent = 'Connected';
   };
- 
+
   pc.onconnectionstatechange = () => {
     if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
       endCurrentCall(false);
     }
   };
- 
+
   return pc;
 }
- 
+
 function initCallSocketListeners(){
   socket.on('incoming-call', async ({ from, offer, callType }) => {
     // If already in a call, auto-reject
@@ -2755,12 +2758,12 @@ function initCallSocketListeners(){
       socket.emit('reject-call', { to: from });
       return;
     }
- 
+
     currentCallPeerId = from;
     currentCallType = callType;
     isCaller = false;
     pendingOffer = offer;
- 
+
     // Look up the caller's info from our chats list (participants) if we have it
     let callerUser = null;
     CHATS.forEach((c) => {
@@ -2768,42 +2771,42 @@ function initCallSocketListeners(){
         if (p._id === from) callerUser = p;
       });
     });
- 
+
     setCallHeaderInfo(callerUser || { name: 'Unknown', _id: from }, callType === 'video' ? 'Incoming video call...' : 'Incoming voice call...');
     document.getElementById('callActiveActions').style.display = 'none';
     document.getElementById('callIncomingActions').style.display = 'flex';
     openCallOverlay();
   });
- 
+
   socket.on('call-answered', async ({ answer }) => {
     if (!peerConnection) return;
     await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
     document.getElementById('callStatusText').textContent = 'Connected';
   });
- 
+
   socket.on('ice-candidate', async ({ candidate }) => {
     if (!peerConnection || !candidate) return;
     try {
       await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
     } catch (err) { /* ignore late candidates */ }
   });
- 
+
   socket.on('call-rejected', () => {
     document.getElementById('callStatusText').textContent = 'Call declined';
     setTimeout(() => endCurrentCall(false), 1200);
   });
- 
+
   socket.on('call-ended', () => {
     endCurrentCall(false);
   });
 }
- 
+
 document.getElementById('callAcceptBtn').addEventListener('click', async () => {
   document.getElementById('callIncomingActions').style.display = 'none';
   document.getElementById('callActiveActions').style.display = 'flex';
   document.getElementById('callCamBtn').style.display = currentCallType === 'video' ? 'flex' : 'none';
   document.getElementById('callStatusText').textContent = 'Connecting...';
- 
+
   try {
     localStream = await navigator.mediaDevices.getUserMedia({
       audio: true,
@@ -2816,48 +2819,48 @@ document.getElementById('callAcceptBtn').addEventListener('click', async () => {
     currentCallPeerId = null;
     return;
   }
- 
+
   if (currentCallType === 'video') {
     const localVideo = document.getElementById('callLocalVideo');
     localVideo.srcObject = localStream;
     localVideo.classList.add('show');
   }
- 
+
   peerConnection = createPeerConnection();
   localStream.getTracks().forEach((track) => peerConnection.addTrack(track, localStream));
- 
+
   await peerConnection.setRemoteDescription(new RTCSessionDescription(pendingOffer));
   const answer = await peerConnection.createAnswer();
   await peerConnection.setLocalDescription(answer);
- 
+
   socket.emit('answer-call', { to: currentCallPeerId, answer });
   pendingOffer = null;
 });
- 
+
 document.getElementById('callRejectBtn').addEventListener('click', () => {
   socket.emit('reject-call', { to: currentCallPeerId });
   endCurrentCall(false);
 });
- 
+
 document.getElementById('callEndBtn').addEventListener('click', () => {
   if (currentCallPeerId) socket.emit('end-call', { to: currentCallPeerId });
   endCurrentCall(false);
 });
- 
+
 document.getElementById('callMuteBtn').addEventListener('click', (e) => {
   if (!localStream) return;
   micMuted = !micMuted;
   localStream.getAudioTracks().forEach((track) => (track.enabled = !micMuted));
   e.currentTarget.classList.toggle('active', micMuted);
 });
- 
+
 document.getElementById('callCamBtn').addEventListener('click', (e) => {
   if (!localStream) return;
   camOff = !camOff;
   localStream.getVideoTracks().forEach((track) => (track.enabled = !camOff));
   e.currentTarget.classList.toggle('active', camOff);
 });
- 
+
 function endCurrentCall(){
   if (peerConnection) {
     peerConnection.close();
@@ -2875,13 +2878,13 @@ function endCurrentCall(){
   camOff = false;
   closeCallOverlay();
 }
- 
+
 // Wire up the call buttons in the chat header (added in Step 2 above)
 document.addEventListener('click', (e) => {
   if (e.target.closest('#startVideoCallBtn')) startCall('video');
   if (e.target.closest('#startVoiceCallBtn')) startCall('audio');
 });
- 
+
 /* ================= CHAT 3-DOT MENU: info / media / search / mute / clear / delete ================= */
 // If your backend uses different route names for these three actions, just
 // change the paths here - everything else in this section stays the same.
@@ -2890,22 +2893,48 @@ const CHAT_MENU_ENDPOINTS = {
   clearChat: (chatId) => `${API_BASE}/chats/${chatId}/clear`, // PUT  (no body needed)
   deleteChat: (chatId) => `${API_BASE}/chats/${chatId}`,      // DELETE
 };
- 
-/* ================= DELETE FOR ME (single message) ================= */
-// Same idea as above: change this path if your backend names the route
-// differently. If the backend call fails (route not implemented yet), the
-// message still hides immediately on this device - it just won't stay
-// hidden after a page refresh until this endpoint exists on the backend.
+
+/* ================= DELETE FOR ME / DELETE FOR EVERYONE (single message) ================= */
+// Same idea as above: change these paths if your backend names the routes
+// differently. If a backend call fails (route not implemented yet), the
+// change still applies immediately on this device - it just won't stay
+// that way after a page refresh (or reach the other person) until the
+// matching backend route + socket relay exist.
 const MESSAGE_ENDPOINTS = {
-  deleteForMe: (messageId) => `${API_BASE}/messages/${messageId}/delete-for-me`, // PUT
+  deleteForMe: (messageId) => `${API_BASE}/messages/${messageId}/delete-for-me`,       // PUT
+  deleteForEveryone: (messageId) => `${API_BASE}/messages/${messageId}/delete-for-everyone`, // PUT
 };
- 
+
+let msgActionTargetId = null;
+
+function openMessageActionSheet(messageId){
+  msgActionTargetId = messageId;
+  document.getElementById('msgActionBackdrop').classList.add('open');
+}
+function closeMsgActionSheet(){
+  document.getElementById('msgActionBackdrop').classList.remove('open');
+  msgActionTargetId = null;
+}
+document.getElementById('msgActionBackdrop').addEventListener('click', (e) => {
+  if (e.target.id === 'msgActionBackdrop') closeMsgActionSheet();
+});
+document.getElementById('msgActionDeleteMe').addEventListener('click', () => {
+  const id = msgActionTargetId;
+  closeMsgActionSheet();
+  if (id) deleteMessageForMe(id);
+});
+document.getElementById('msgActionDeleteEveryone').addEventListener('click', () => {
+  const id = msgActionTargetId;
+  closeMsgActionSheet();
+  if (id) deleteMessageForEveryone(id);
+});
+
 async function deleteMessageForMe(messageId){
   if (!confirm('Ye message sirf tumhare liye delete hoga. Doosre insaan ko unke WhatsApp mein ye message wahi dikhega. Continue karein?')) return;
- 
+
   DELETED_FOR_ME.add(messageId);
   if (currentChatId) renderMessages(currentChatId); // hide it immediately
- 
+
   // best-effort call so it stays hidden even after a reload / re-login on
   // this device - safe to ignore if the backend route isn't ready yet
   try {
@@ -2915,7 +2944,39 @@ async function deleteMessageForMe(messageId){
     });
   } catch (err) { /* already hidden locally, nothing else to do */ }
 }
- 
+
+// Marks a message as deleted-for-everyone in local memory and re-renders if
+// its chat is currently open. The message row stays in place but its
+// content is swapped for the "This message was deleted" placeholder with
+// the cross icon - nothing is actually erased from the underlying data.
+function markMessageDeletedEverywhere(messageId){
+  Object.keys(MESSAGES).forEach(cid => {
+    const msg = (MESSAGES[cid] || []).find(m => m._id === messageId);
+    if (msg) msg.isDeletedForEveryone = true;
+  });
+  if (currentChatId) renderMessages(currentChatId);
+}
+
+async function deleteMessageForEveryone(messageId){
+  if (!confirm('Kya tum is message ko everyone ke liye delete karna chahte ho? Wo dekhenge ki message delete ho gaya hai.')) return;
+
+  markMessageDeletedEverywhere(messageId); // instant feedback on this device
+
+  try {
+    await fetch(MESSAGE_ENDPOINTS.deleteForEveryone(messageId), {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${authToken}` },
+    });
+  } catch (err) { /* stays marked locally either way */ }
+
+  // push it to the other person's screen right away too, if the backend
+  // relays this socket event (see initCallSocketListeners-style listeners
+  // below for the matching 'message-deleted-everyone' handler)
+  if (socket && currentChatId) {
+    socket.emit('delete-message-everyone', { chatId: currentChatId, messageId });
+  }
+}
+
 document.getElementById('chatMenuBtn').addEventListener('click', () => {
   const isGroup = currentChatObj && currentChatObj.isGroupChat;
   document.getElementById('menuViewInfoLabel').textContent = isGroup ? 'Group Info' : 'View Contact';
@@ -2927,14 +2988,14 @@ document.getElementById('chatMenuBackdrop').addEventListener('click', (e) => {
   if (e.target.id === 'chatMenuBackdrop') document.getElementById('chatMenuBackdrop').classList.remove('open');
 });
 function closeChatMenu(){ document.getElementById('chatMenuBackdrop').classList.remove('open'); }
- 
+
 document.getElementById('menuViewInfo').addEventListener('click', () => { closeChatMenu(); openContactInfo(); });
 document.getElementById('menuMediaDocs').addEventListener('click', () => { closeChatMenu(); openMediaLinksDocs(); });
 document.getElementById('menuSearch').addEventListener('click', () => { closeChatMenu(); openChatSearch(); });
 document.getElementById('menuMute').addEventListener('click', () => { closeChatMenu(); toggleMuteChat(); });
 document.getElementById('menuClearChat').addEventListener('click', () => { closeChatMenu(); clearCurrentChat(); });
 document.getElementById('menuDeleteChat').addEventListener('click', () => { closeChatMenu(); deleteCurrentChat(); });
- 
+
 /* ---- 1. View Contact / Group Info ---- */
 function openContactInfo(){
   if (!currentChatObj) return;
@@ -2943,11 +3004,11 @@ function openContactInfo(){
   const color = chatAvatarColor(currentChatObj);
   const other = getOtherParticipant(currentChatObj);
   const muted = !!currentChatObj.isMuted;
- 
+
   document.getElementById('infoBarTitle').textContent = isGroup ? 'Group Info' : 'Contact Info';
- 
+
   const mediaCount = (MESSAGES[currentChatId] || []).filter(m => m.messageType === 'image' || m.messageType === 'video' || m.messageType === 'document').length;
- 
+
   let membersHtml = '';
   if (isGroup) {
     const members = (currentChatObj.participants || []).map(p => `
@@ -2961,7 +3022,7 @@ function openContactInfo(){
       ${members}
     `;
   }
- 
+
   document.getElementById('infoBody').innerHTML = `
     <div class="info-profile-block">
       <div class="info-avatar" style="background:${color}">${
@@ -2971,7 +3032,7 @@ function openContactInfo(){
       ${!isGroup && other && other.phoneNumber ? `<div class="info-sub">${escapeHtml(other.phoneNumber)}</div>` : ''}
       ${!isGroup && other && other.about ? `<div class="info-sub">${escapeHtml(other.about)}</div>` : ''}
     </div>
- 
+
     <div class="info-row" id="infoMediaRow">
       <div class="info-row-left">
         ${svgCamera}
@@ -2982,7 +3043,7 @@ function openContactInfo(){
       </div>
       <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--dim);"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
- 
+
     <div class="info-row no-click">
       <div class="info-row-left">
         <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-2.1A7 7 0 0 0 19 12h-2z"/></svg>
@@ -2990,9 +3051,9 @@ function openContactInfo(){
       </div>
       <div class="info-toggle ${muted ? 'on' : ''}" id="infoMuteToggle"><div class="info-toggle-knob"></div></div>
     </div>
- 
+
     ${membersHtml}
- 
+
     <div class="info-danger-row" id="infoClearChat">
       <svg viewBox="0 0 24 24"><path d="M6 7h12M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-8 0v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V7" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
       Clear Chat
@@ -3002,18 +3063,18 @@ function openContactInfo(){
       Delete Chat
     </div>
   `;
- 
+
   document.getElementById('infoMuteToggle').addEventListener('click', toggleMuteChat);
   document.getElementById('infoMediaRow').addEventListener('click', openMediaLinksDocs);
   document.getElementById('infoClearChat').addEventListener('click', clearCurrentChat);
   document.getElementById('infoDeleteChat').addEventListener('click', deleteCurrentChat);
- 
+
   document.getElementById('infoOverlay').classList.add('open');
 }
 document.getElementById('infoBack').addEventListener('click', () => {
   document.getElementById('infoOverlay').classList.remove('open');
 });
- 
+
 /* ---- 2. Media, Links & Docs ---- */
 function openMediaLinksDocs(){
   if (!currentChatId) return;
@@ -3025,7 +3086,7 @@ function openMediaLinksDocs(){
 function renderMediaLinksDocs(tab){
   const msgs = MESSAGES[currentChatId] || [];
   const body = document.getElementById('mediaBody');
- 
+
   if (tab === 'media') {
     const items = msgs.filter(m => m.messageType === 'image' || m.messageType === 'video');
     if (!items.length) {
@@ -3083,11 +3144,11 @@ document.querySelectorAll('.media-tab').forEach(tab => {
 document.getElementById('mediaOverlayBack').addEventListener('click', () => {
   document.getElementById('mediaOverlay').classList.remove('open');
 });
- 
+
 /* ---- 3. Search in Chat ---- */
 let searchMatches = [];
 let searchIndex = -1;
- 
+
 function openChatSearch(){
   document.getElementById('chatSearchBar').classList.add('active');
   document.getElementById('chatSearchInput').value = '';
@@ -3101,7 +3162,7 @@ function closeChatSearch(){
   renderMessages(currentChatId); // clears highlights
 }
 document.getElementById('chatSearchClose').addEventListener('click', closeChatSearch);
- 
+
 document.getElementById('chatSearchInput').addEventListener('input', (e) => {
   runChatSearch(e.target.value.trim());
 });
@@ -3109,18 +3170,18 @@ document.getElementById('chatSearchInput').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') { e.preventDefault(); document.getElementById('chatSearchDown').click(); }
 });
 function escapeRegex(s){ return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
- 
+
 function runChatSearch(query){
   renderMessages(currentChatId); // reset first
   const area = document.getElementById('messagesArea');
   searchMatches = [];
   searchIndex = -1;
- 
+
   if (!query) {
     document.getElementById('chatSearchCount').textContent = '';
     return;
   }
- 
+
   const testRe = new RegExp(escapeRegex(query), 'i');
   area.querySelectorAll('.bubble-text').forEach(el => {
     if (testRe.test(el.textContent)) {
@@ -3129,7 +3190,7 @@ function runChatSearch(query){
       searchMatches.push(el.closest('.msg-row'));
     }
   });
- 
+
   document.getElementById('chatSearchCount').textContent = searchMatches.length ? `1/${searchMatches.length}` : 'No results';
   if (searchMatches.length) {
     searchIndex = 0;
@@ -3154,7 +3215,7 @@ document.getElementById('chatSearchDown').addEventListener('click', () => {
   searchIndex = (searchIndex + 1) % searchMatches.length;
   jumpToSearchMatch();
 });
- 
+
 /* ---- 4. Mute Notifications ---- */
 async function toggleMuteChat(){
   if (!currentChatObj) return;
@@ -3173,7 +3234,7 @@ async function toggleMuteChat(){
     currentChatObj.isMuted = newMuted;
     const inList = CHATS.find(c => c._id === currentChatId);
     if (inList) inList.isMuted = newMuted;
- 
+
     const toggleEl = document.getElementById('infoMuteToggle');
     if (toggleEl) toggleEl.classList.toggle('on', newMuted);
     document.getElementById('menuMuteLabel').textContent = newMuted ? 'Unmute Notifications' : 'Mute Notifications';
@@ -3182,12 +3243,12 @@ async function toggleMuteChat(){
     alert('Backend se connect nahi ho paya. Server check karo.');
   }
 }
- 
+
 /* ---- 5. Clear Chat ---- */
 async function clearCurrentChat(){
   if (!currentChatId) return;
   if (!confirm('Kya tum is chat ke saare messages clear karna chahte ho? Ye undo nahi ho sakta.')) return;
- 
+
   try {
     const res = await fetch(CHAT_MENU_ENDPOINTS.clearChat(currentChatId), {
       method: 'PUT',
@@ -3200,7 +3261,7 @@ async function clearCurrentChat(){
     }
     MESSAGES[currentChatId] = [];
     renderMessages(currentChatId);
- 
+
     const inList = CHATS.find(c => c._id === currentChatId);
     if (inList) { inList.lastMessage = null; }
     refreshChatsScreen();
@@ -3209,12 +3270,12 @@ async function clearCurrentChat(){
     alert('Backend se connect nahi ho paya. Server check karo.');
   }
 }
- 
+
 /* ---- 6. Delete Chat ---- */
 async function deleteCurrentChat(){
   if (!currentChatId) return;
   if (!confirm('Kya tum poori chat delete karna chahte ho? Ye permanent hai aur undo nahi ho sakta.')) return;
- 
+
   const chatIdToDelete = currentChatId;
   try {
     const res = await fetch(CHAT_MENU_ENDPOINTS.deleteChat(chatIdToDelete), {
@@ -3229,7 +3290,7 @@ async function deleteCurrentChat(){
     CHATS = CHATS.filter(c => c._id !== chatIdToDelete);
     delete MESSAGES[chatIdToDelete];
     document.getElementById('infoOverlay').classList.remove('open');
- 
+
     // go back to chat list
     if (socket) socket.emit('leave-chat', chatIdToDelete);
     clearInterval(chatPollTimer);
@@ -3240,33 +3301,33 @@ async function deleteCurrentChat(){
     document.querySelector('.nav-item[data-tab="chats"]').classList.add('active');
     currentChatId = null;
     currentChatObj = null;
- 
+
     refreshChatsScreen();
   } catch (err) {
     alert('Backend se connect nahi ho paya. Server check karo.');
   }
 }
- 
+
 /* ================= AUTH FLOW (connects to real backend) ================= */
 // Change this if your backend runs on a different port
 const API_BASE = 'https://whatsreels-backend-2kh3.onrender.com/api';
- 
+
 // authToken, currentUser, pendingPhone are declared at the very top of the
 // script (kept in memory only for this session - no localStorage per
 // environment rules).
- 
+
 function showAuthScreen(name){
   document.querySelectorAll('.auth-screen').forEach(s => s.classList.remove('active'));
   document.querySelector(`.auth-screen[data-auth="${name}"]`).classList.add('active');
 }
- 
+
 function setAuthError(elId, message){
   const el = document.getElementById(elId);
   if (!message) { el.classList.remove('show'); el.textContent=''; return; }
   el.textContent = message;
   el.classList.add('show');
 }
- 
+
 function setBtnLoading(btn, loading, normalText){
   if (loading) {
     btn.disabled = true;
@@ -3276,22 +3337,22 @@ function setBtnLoading(btn, loading, normalText){
     btn.textContent = normalText;
   }
 }
- 
+
 /* ---- Step 1: Send OTP ---- */
 document.getElementById('sendOtpBtn').addEventListener('click', async () => {
   const cc = document.getElementById('countryCode').value.trim();
   const phone = document.getElementById('phoneInput').value.trim();
   setAuthError('phoneError', '');
- 
+
   if (!/^\d{10}$/.test(phone)) {
     setAuthError('phoneError', 'Sahi 10-digit phone number daalo.');
     return;
   }
- 
+
   pendingPhone = cc + phone;
   const btn = document.getElementById('sendOtpBtn');
   setBtnLoading(btn, true);
- 
+
   try {
     const res = await fetch(`${API_BASE}/auth/send-otp`, {
       method: 'POST',
@@ -3299,17 +3360,17 @@ document.getElementById('sendOtpBtn').addEventListener('click', async () => {
       body: JSON.stringify({ phoneNumber: pendingPhone }),
     });
     const data = await res.json();
- 
+
     if (!res.ok) {
       setAuthError('phoneError', data.message || 'Kuch galat ho gaya, dobara try karo.');
       setBtnLoading(btn, false, 'Next');
       return;
     }
- 
+
     document.querySelector('#otpSubtitle b').textContent = pendingPhone;
     showAuthScreen('otp');
     document.querySelector('.otp-box[data-otp-idx="0"]').focus();
- 
+
     // Development convenience: backend returns devOtp when not in production.
     // Twilio isn't connected yet, so this is the only way to see the code right now.
     if (data.devOtp) {
@@ -3320,12 +3381,12 @@ document.getElementById('sendOtpBtn').addEventListener('click', async () => {
   }
   setBtnLoading(btn, false, 'Next');
 });
- 
+
 document.getElementById('backToPhone').addEventListener('click', () => {
   setAuthError('otpError', '');
   showAuthScreen('phone');
 });
- 
+
 /* ---- OTP box auto-advance ---- */
 const otpBoxes = document.querySelectorAll('.otp-box');
 otpBoxes.forEach((box, i) => {
@@ -3337,20 +3398,20 @@ otpBoxes.forEach((box, i) => {
     if (e.key === 'Backspace' && !box.value && i > 0) otpBoxes[i - 1].focus();
   });
 });
- 
+
 /* ---- Step 2: Verify OTP ---- */
 document.getElementById('verifyOtpBtn').addEventListener('click', async () => {
   const otp = Array.from(otpBoxes).map(b => b.value).join('');
   setAuthError('otpError', '');
- 
+
   if (otp.length !== 6) {
     setAuthError('otpError', 'Poora 6-digit OTP daalo.');
     return;
   }
- 
+
   const btn = document.getElementById('verifyOtpBtn');
   setBtnLoading(btn, true);
- 
+
   try {
     const res = await fetch(`${API_BASE}/auth/verify-otp`, {
       method: 'POST',
@@ -3358,16 +3419,16 @@ document.getElementById('verifyOtpBtn').addEventListener('click', async () => {
       body: JSON.stringify({ phoneNumber: pendingPhone, otp }),
     });
     const data = await res.json();
- 
+
     if (!res.ok) {
       setAuthError('otpError', data.message || 'OTP galat hai ya expire ho gaya.');
       setBtnLoading(btn, false, 'Verify & Continue');
       return;
     }
- 
+
     authToken = data.token;
     currentUser = data.user;
- 
+
     if (data.user.isProfileComplete) {
       completeLogin();
     } else {
@@ -3378,24 +3439,24 @@ document.getElementById('verifyOtpBtn').addEventListener('click', async () => {
   }
   setBtnLoading(btn, false, 'Verify & Continue');
 });
- 
+
 document.getElementById('resendOtp').addEventListener('click', () => {
   document.getElementById('sendOtpBtn').click();
 });
- 
+
 /* ---- Step 3: Complete profile (name + photo) ---- */
 /* ---- Profile photo picker (real file selection + preview) ---- */
 let selectedAvatarDataUrl = null;
 const avatarFileInput = document.getElementById('avatarFileInput');
- 
+
 document.getElementById('avatarPicker').addEventListener('click', () => {
   avatarFileInput.click();
 });
- 
+
 avatarFileInput.addEventListener('change', () => {
   const file = avatarFileInput.files[0];
   if (!file) return;
- 
+
   if (!file.type.startsWith('image/')) {
     alert('Sirf image file select karo (jpg, png, etc.)');
     return;
@@ -3404,7 +3465,7 @@ avatarFileInput.addEventListener('change', () => {
     alert('Photo 5MB se chhoti honi chahiye.');
     return;
   }
- 
+
   const reader = new FileReader();
   reader.onload = (e) => {
     selectedAvatarDataUrl = e.target.result;
@@ -3415,17 +3476,17 @@ avatarFileInput.addEventListener('change', () => {
   };
   reader.readAsDataURL(file);
 });
- 
+
 document.getElementById('finishProfileBtn').addEventListener('click', async () => {
   const name = document.getElementById('nameInput').value.trim();
   if (!name) {
     document.getElementById('nameInput').focus();
     return;
   }
- 
+
   const btn = document.getElementById('finishProfileBtn');
   setBtnLoading(btn, true);
- 
+
   try {
     const res = await fetch(`${API_BASE}/auth/complete-profile`, {
       method: 'PUT',
@@ -3436,13 +3497,13 @@ document.getElementById('finishProfileBtn').addEventListener('click', async () =
       body: JSON.stringify({ name, profilePhoto: selectedAvatarDataUrl || undefined }),
     });
     const data = await res.json();
- 
+
     if (!res.ok) {
       alert(data.message || 'Profile save nahi hui, dobara try karo.');
       setBtnLoading(btn, false, 'WhatsReels shuru karo');
       return;
     }
- 
+
     currentUser = data.user;
     completeLogin();
   } catch (err) {
@@ -3450,7 +3511,7 @@ document.getElementById('finishProfileBtn').addEventListener('click', async () =
     setBtnLoading(btn, false, 'WhatsReels shuru karo');
   }
 });
- 
+
 /* ---- Finish: hide auth, show the main app ---- */
 function completeLogin(){
   document.getElementById('authOverlay').classList.add('hidden');
@@ -3459,35 +3520,35 @@ function completeLogin(){
   fetchChats();
   setInterval(pollChatListForUpdates, 4000);
 }
- 
+
 /* ================= Socket.io real-time connection ================= */
 let socket = null;
- 
+
 function initSocket(){
   socket = io('https://whatsreels-backend-2kh3.onrender.com');
- 
+
   socket.on('connect', () => {
     socket.emit('setup', currentUser.id);
   });
- 
+
   initCallSocketListeners();
- 
+
   // A new message arrived for a chat we're part of
   socket.on('message-received', (message) => {
     const chatId = message.chat._id || message.chat;
- 
+
     MESSAGES[chatId] = MESSAGES[chatId] || [];
     // avoid duplicates (message might arrive via more than one broadcast channel)
     const alreadyHave = MESSAGES[chatId].some(m => m._id === message._id);
     if (!alreadyHave) MESSAGES[chatId].push(message);
- 
+
     // update the chat list preview
     const chatInList = CHATS.find(c => c._id === chatId);
     if (chatInList) {
       chatInList.lastMessage = message;
       chatInList.updatedAt = message.createdAt;
     }
- 
+
     if (currentChatId === chatId) {
       // chat window is open - show it immediately and mark seen
       renderMessages(chatId);
@@ -3504,7 +3565,7 @@ function initSocket(){
       refreshChatsScreen();
     }
   });
- 
+
   // The other person just read our messages - update our local copies so the
   // tick turns green immediately, without waiting for a full re-fetch.
   socket.on('message-seen-update', ({ chatId, seenBy }) => {
@@ -3517,10 +3578,18 @@ function initSocket(){
     }
     if (currentChatId === chatId) renderMessages(chatId);
   });
- 
+
+  // Someone (possibly us, on another device) marked a message as deleted
+  // for everyone - reflect it immediately without waiting for a re-fetch.
+  // Requires the backend to relay the 'delete-message-everyone' event it
+  // receives (see deleteMessageForEveryone above) back out as this event.
+  socket.on('message-deleted-everyone', ({ messageId }) => {
+    markMessageDeletedEverywhere(messageId);
+  });
+
   socket.on('typing', (chatId) => { if (currentChatId === chatId) showTyping(); });
   socket.on('stop-typing', (chatId) => { if (currentChatId === chatId) hideTyping(); });
- 
+
   // Update the open chat window's header live when the other person comes online/offline
   socket.on('user-online', (userId) => {
     if (!currentChatObj || currentChatObj.isGroupChat) return;
@@ -3539,7 +3608,7 @@ function initSocket(){
     }
   });
 }
- 
+
 /* ================= Fetch real chat list from backend ================= */
 async function fetchChats(){
   try {
@@ -3555,7 +3624,7 @@ async function fetchChats(){
     console.log('Could not fetch chats:', err);
   }
 }
- 
+
 /* ================= ATTACH: photo / video / document sharing ================= */
 document.getElementById('attachBtn').addEventListener('click', () => {
   document.getElementById('attachMenu').classList.add('open');
@@ -3575,7 +3644,7 @@ document.getElementById('attachDocument').addEventListener('click', () => {
   document.getElementById('attachMenu').classList.remove('open');
   document.getElementById('chatDocInput').click();
 });
- 
+
 document.getElementById('chatPhotoInput').addEventListener('change', (e) => {
   handleChatFileUpload(e.target.files[0], 'image');
   e.target.value = '';
@@ -3588,7 +3657,7 @@ document.getElementById('chatDocInput').addEventListener('change', (e) => {
   handleChatFileUpload(e.target.files[0], 'document');
   e.target.value = '';
 });
- 
+
 function showUploadingBubble(){
   const area = document.getElementById('messagesArea');
   const row = document.createElement('div');
@@ -3602,18 +3671,18 @@ function hideUploadingBubble(){
   const row = document.getElementById('uploadingRow');
   if (row) row.remove();
 }
- 
+
 async function handleChatFileUpload(file, type){
   if (!file || !currentChatId) return;
- 
+
   const maxSize = type === 'document' ? 10 * 1024 * 1024 : 8 * 1024 * 1024;
   if (file.size > maxSize) {
     alert(`File ${maxSize / (1024*1024)}MB se choti honi chahiye.`);
     return;
   }
- 
+
   showUploadingBubble();
- 
+
   const reader = new FileReader();
   reader.onload = async (e) => {
     const dataUrl = e.target.result;
@@ -3630,16 +3699,16 @@ async function handleChatFileUpload(file, type){
       });
       const savedMessage = await res.json();
       hideUploadingBubble();
- 
+
       if (!res.ok) {
         alert(savedMessage.message || 'Upload nahi hua.');
         return;
       }
- 
+
       MESSAGES[currentChatId] = MESSAGES[currentChatId] || [];
       MESSAGES[currentChatId].push(savedMessage);
       renderMessages(currentChatId);
- 
+
       if (currentChatObj) {
         currentChatObj.lastMessage = savedMessage;
         currentChatObj.updatedAt = savedMessage.createdAt;
@@ -3654,7 +3723,7 @@ async function handleChatFileUpload(file, type){
   };
   reader.readAsDataURL(file);
 }
- 
+
 // Runs continuously in the background (independent of which chat, if any, is
 // open) so unread badges on the Chats list stay accurate even if a live
 // socket push is missed - checked every few seconds as a safety net.
@@ -3665,23 +3734,23 @@ async function pollChatListForUpdates(){
     });
     if (!res.ok) return;
     const freshChats = await res.json();
- 
+
     freshChats.forEach(fresh => {
       const existing = CHATS.find(c => c._id === fresh._id);
- 
+
       if (!existing) {
         // a brand new chat someone started with us
         CHATS.unshift(fresh);
         return;
       }
- 
+
       const gotNewMessage = fresh.lastMessage &&
         (!existing.lastMessage || fresh.lastMessage._id !== existing.lastMessage._id);
- 
+
       existing.lastMessage = fresh.lastMessage;
       existing.updatedAt = fresh.updatedAt;
       existing.participants = fresh.participants; // keeps online/offline status fresh
- 
+
       if (gotNewMessage && currentChatId !== fresh._id) {
         const senderId = fresh.lastMessage.sender && (fresh.lastMessage.sender._id || fresh.lastMessage.sender);
         if (senderId !== currentUser.id) {
@@ -3689,11 +3758,10 @@ async function pollChatListForUpdates(){
         }
       }
     });
- 
+
     refreshChatsScreen();
   } catch (err) { /* silent - will retry on next tick */ }
 }
 </script>
 </body>
 </html>
- 
