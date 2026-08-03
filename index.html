@@ -224,6 +224,7 @@
   .bubble-meta svg{width:15px;height:11px;}
   .tick-seen{fill:#25D366;}
   .tick-sent{fill:rgba(233,237,239,0.6);}
+  .pending-clock{width:11px !important;height:11px !important;}
 
   /* ================= DELETE FOR ME / DELETE FOR EVERYONE ================= */
   .msg-row.out{cursor:pointer;} /* tap your own message to open the delete menu */
@@ -1424,6 +1425,7 @@ const svgMic = `<svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0
 const svgSend = `<svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>`;
 const svgCheck1 = `<svg viewBox="0 0 16 11" class="tick-sent"><path d="M1 5.5L5 9.5L11 1.5" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>`;
 const svgCheck2 = `<svg viewBox="0 0 16 11" class="tick-seen"><path d="M1 5.5L5 9.5L11 1.5" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M5 5.5L9 9.5L15 1.5" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>`;
+const svgClock = `<svg viewBox="0 0 16 16" class="tick-sent pending-clock"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M8 4.5V8l2.6 1.6" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>`;
 
 function initials(name){ return name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
 
@@ -1987,7 +1989,10 @@ async function pollForNewMessages(chatId){
     });
 
     if (newOnes.length > 0 || seenChanged) {
-      MESSAGES[chatId] = freshMsgs;
+      // keep any optimistic (not-yet-confirmed) bubble alive across this
+      // refresh - the backend won't know about it yet if it's still in flight
+      const stillPending = (MESSAGES[chatId] || []).filter(m => m._pending);
+      MESSAGES[chatId] = [...freshMsgs, ...stillPending];
       renderMessages(chatId);
       if (newOnes.length > 0) {
         const chatInList = CHATS.find(c => c._id === chatId);
@@ -2021,7 +2026,7 @@ function renderMessages(chatId){
     const isOut = m.sender._id === currentUser.id;
     const other = getOtherParticipant(currentChatObj);
     const seenByOther = other && m.seenBy && m.seenBy.some(u => (u._id || u) === other._id);
-    const tick = isOut ? (seenByOther ? svgCheck2 : svgCheck1) : '';
+    const tick = isOut ? (m._pending ? svgClock : (seenByOther ? svgCheck2 : svgCheck1)) : '';
     const senderLabel = (!isOut && currentChatObj.isGroupChat)
       ? `<b style="color:${colorFromId(m.sender._id)}">${m.sender.name}</b><br>` : '';
 
@@ -2047,7 +2052,7 @@ function renderMessages(chatId){
     }
 
     html += `
-      <div class="msg-row ${isOut ? 'out' : 'in'}" data-msg-id="${m._id}" data-deleted="${m.isDeletedForEveryone ? '1' : '0'}">
+      <div class="msg-row ${isOut ? 'out' : 'in'}" data-msg-id="${m._id}" data-deleted="${m.isDeletedForEveryone ? '1' : '0'}" data-pending="${m._pending ? '1' : '0'}">
         <div class="bubble">
           ${bodyHtml}
           <span class="bubble-meta">${formatTime(m.createdAt)} ${tick}</span>
@@ -2096,7 +2101,7 @@ document.getElementById('mediaViewerClose').addEventListener('click', () => {
 // this menu.
 document.getElementById('messagesArea').addEventListener('click', (e) => {
   const row = e.target.closest('.msg-row.out');
-  if (!row || row.dataset.deleted === '1') return;
+  if (!row || row.dataset.deleted === '1' || row.dataset.pending === '1') return;
   openMessageActionSheet(row.dataset.msgId);
 });
 
@@ -2637,6 +2642,24 @@ async function sendCurrentMessage(){
   msgInput.style.height = 'auto';
   updateSendBtnIcon();
 
+  // ================= PERFORMANCE: optimistic send =================
+  // Show the bubble immediately with a pending clock icon instead of
+  // waiting for the (sometimes slow, e.g. Render free tier waking up)
+  // backend round-trip. Swapped for the real message once confirmed.
+  const tempId = 'temp-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
+  const tempMessage = {
+    _id: tempId,
+    sender: { _id: currentUser.id, name: currentUser.name },
+    content: text,
+    messageType: 'text',
+    createdAt: new Date().toISOString(),
+    seenBy: [],
+    _pending: true,
+  };
+  MESSAGES[currentChatId] = MESSAGES[currentChatId] || [];
+  MESSAGES[currentChatId].push(tempMessage);
+  renderMessages(currentChatId);
+
   try {
     const res = await fetch(`${API_BASE}/messages`, {
       method: 'POST',
@@ -2646,12 +2669,13 @@ async function sendCurrentMessage(){
     const savedMessage = await res.json();
 
     if (!res.ok) {
-      alert(savedMessage.message || 'Message bhej nahi paya.');
-      return;
+      throw new Error(savedMessage.message || 'Message bhej nahi paya.');
     }
 
-    MESSAGES[currentChatId] = MESSAGES[currentChatId] || []; 
-    MESSAGES[currentChatId].push(savedMessage);
+    // swap the temp bubble out for the confirmed message from the backend
+    const list = MESSAGES[currentChatId] || [];
+    const idx = list.findIndex(m => m._id === tempId);
+    if (idx !== -1) list[idx] = savedMessage;
     renderMessages(currentChatId);
 
     // update chat list preview locally
@@ -2665,7 +2689,14 @@ async function sendCurrentMessage(){
       socket.emit('new-message', { ...savedMessage, chat: currentChatObj });
     }
   } catch (err) {
-    alert('Backend se connect nahi ho paya. Message save nahi hua.');
+    // remove the pending bubble and give the text back so nothing is lost
+    MESSAGES[currentChatId] = (MESSAGES[currentChatId] || []).filter(m => m._id !== tempId);
+    renderMessages(currentChatId);
+    msgInput.value = text;
+    msgInput.style.height = 'auto';
+    msgInput.style.height = Math.min(msgInput.scrollHeight, 90) + 'px';
+    updateSendBtnIcon();
+    alert(err.message || 'Backend se connect nahi ho paya. Message save nahi hua.');
   }
 }
 
