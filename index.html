@@ -1037,6 +1037,132 @@
   .chat-search-count{font-size:12px;color:var(--dim); white-space:nowrap;}
   .bubble-text mark{background:#ffd54f; color:#000; border-radius:2px;}
   .msg-row.search-active .bubble{outline:2px solid var(--accent);}
+
+  /* ================= APP TOAST (replaces showToast()) ================= */
+  .app-toast{
+    position:absolute;
+    bottom:90px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:rgba(30,30,30,0.97);
+    color:#fff;
+    padding:12px 20px;
+    border-radius:12px;
+    font-size:13.5px;
+    line-height:1.4;
+    max-width:85%;
+    text-align:center;
+    z-index:200;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease;
+    box-shadow:0 4px 16px rgba(0,0,0,0.4);
+  }
+  .app-toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  .app-toast.error{background:rgba(200,60,75,0.97);}
+
+  /* ================= CONFIRM / PROMPT DIALOGS (replace confirm()/prompt()) ================= */
+  .confirm-overlay{
+    position:absolute; inset:0;
+    background:rgba(0,0,0,0.55);
+    z-index:150;
+    display:none;
+    align-items:center; justify-content:center;
+    padding:24px;
+  }
+  .confirm-overlay.open{display:flex;}
+  .confirm-box{
+    background:var(--panel-light);
+    border-radius:14px;
+    padding:22px 20px 16px;
+    width:100%;
+    max-width:320px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+  }
+  .confirm-title{font-size:17px;font-weight:700;margin-bottom:8px;}
+  .confirm-message{font-size:14px;color:var(--dim);line-height:1.5;}
+  .confirm-actions{display:flex; justify-content:flex-end; gap:6px; margin-top:18px;}
+  .confirm-btn{
+    border:none; background:none;
+    padding:9px 14px;
+    border-radius:8px;
+    font-size:14.5px; font-weight:600;
+    cursor:pointer;
+    color:var(--accent);
+  }
+  .confirm-btn.cancel{color:var(--dim);}
+  .confirm-btn.ok.danger{color:var(--danger);}
+  .confirm-btn:active{background:rgba(255,255,255,0.08);}
+  .prompt-input{
+    width:100%;
+    background:var(--panel);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:8px;
+    padding:11px 12px;
+    color:var(--text);
+    font-size:14.5px;
+    outline:none;
+    margin-top:4px;
+  }
+  .prompt-input:focus{border-color:var(--accent);}
+
+  /* ================= SCROLL TO BOTTOM BUTTON ================= */
+  .scroll-to-bottom-btn{
+    position:absolute;
+    right:14px;
+    bottom:74px;
+    width:38px;height:38px;border-radius:50%;
+    background:var(--panel-light);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.4);
+    cursor:pointer;
+    opacity:0; transform:translateY(10px) scale(0.85);
+    pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease;
+    z-index:5;
+  }
+  .scroll-to-bottom-btn.show{opacity:1; transform:translateY(0) scale(1); pointer-events:auto;}
+  .scroll-to-bottom-btn svg{width:18px;height:18px;fill:var(--text);}
+
+  /* ================= GROUPED (CONSECUTIVE) MESSAGE BUBBLES ================= */
+  .msg-row.grouped{margin-top:1px;}
+  .msg-row.out.grouped .bubble{border-top-right-radius:8px;}
+  .msg-row.in.grouped .bubble{border-top-left-radius:8px;}
+
+  /* ================= LOADING SKELETONS ================= */
+  @keyframes skeletonPulse{
+    0%{opacity:0.35;}
+    50%{opacity:0.75;}
+    100%{opacity:0.35;}
+  }
+  .skeleton-row{
+    display:flex;align-items:center;gap:12px;
+    padding:11px 16px;
+  }
+  .skeleton-avatar{
+    width:50px;height:50px;border-radius:50%;
+    background:var(--panel-light);
+    animation:skeletonPulse 1.4s ease-in-out infinite;
+    flex-shrink:0;
+  }
+  .skeleton-lines{flex:1; display:flex; flex-direction:column; gap:8px;}
+  .skeleton-line{
+    height:11px;border-radius:4px;
+    background:var(--panel-light);
+    animation:skeletonPulse 1.4s ease-in-out infinite;
+  }
+  .skeleton-line.short{width:38%;}
+  .skeleton-line.long{width:72%;}
+  .reels-loading{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:14px; color:var(--dim); background:#000;
+  }
+  .reels-spinner{
+    width:34px;height:34px;border-radius:50%;
+    border:3px solid rgba(255,255,255,0.15);
+    border-top-color:var(--accent);
+    animation:authSpin .8s linear infinite;
+  }
 </style>
 </head>
 <body>
@@ -1286,6 +1412,31 @@
     <video id="mediaViewerVideo" style="display:none;" controls playsinline></video>
   </div>
 
+  <div class="app-toast" id="appToast"></div>
+
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-box">
+      <div class="confirm-title" id="confirmTitle"></div>
+      <div class="confirm-message" id="confirmMessage"></div>
+      <div class="confirm-actions">
+        <button class="confirm-btn cancel" id="confirmCancelBtn">Cancel</button>
+        <button class="confirm-btn ok" id="confirmOkBtn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="confirm-overlay" id="promptOverlay">
+    <div class="confirm-box">
+      <div class="confirm-title" id="promptTitle"></div>
+      <div class="confirm-message" id="promptMessage" style="margin-bottom:4px;"></div>
+      <input type="text" class="prompt-input" id="promptInput" />
+      <div class="confirm-actions">
+        <button class="confirm-btn cancel" id="promptCancelBtn">Cancel</button>
+        <button class="confirm-btn ok" id="promptOkBtn">OK</button>
+      </div>
+    </div>
+  </div>
+
   <div class="chat-menu-backdrop" id="chatMenuBackdrop">
     <div class="chat-menu-sheet">
       <div class="chat-menu-item" id="menuViewInfo">
@@ -1370,6 +1521,7 @@ let pendingPhone = '';
 // Real chat/message data now comes from the backend (see fetchChats / openChat below).
 // These start empty and get filled in after login.
 let CHATS = [];
+let chatsLoading = true; // shows a skeleton list until the first fetchChats() resolves
 let MESSAGES = {}; // keyed by chatId -> array of message objects from the backend
 const DELETED_FOR_ME = new Set(); // message IDs hidden from this device's view only (not deleted for the other person)
 
@@ -1429,11 +1581,113 @@ const svgClock = `<svg viewBox="0 0 16 16" class="tick-sent pending-clock"><circ
 
 function initials(name){ return name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
 
+/* ============ App-wide Toast / Confirm / Prompt (replace native alert/confirm/prompt) ============ */
+let appToastTimer = null;
+function showToast(message, opts = {}){
+  const el = document.getElementById('appToast');
+  if (!el) { console.log(message); return; }
+  el.textContent = message;
+  el.className = 'app-toast show' + (opts.type === 'error' ? ' error' : '');
+  clearTimeout(appToastTimer);
+  appToastTimer = setTimeout(() => el.classList.remove('show'), opts.duration || 2600);
+}
+
+function confirmDialog({ title = 'Are you sure?', message = '', confirmText = 'Confirm', cancelText = 'Cancel', danger = false } = {}){
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('confirmOverlay');
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmMessage').textContent = message;
+    const okBtn = document.getElementById('confirmOkBtn');
+    const cancelBtn = document.getElementById('confirmCancelBtn');
+    okBtn.textContent = confirmText;
+    cancelBtn.textContent = cancelText;
+    okBtn.classList.toggle('danger', danger);
+
+    function cleanup(result){
+      overlay.classList.remove('open');
+      okBtn.removeEventListener('click', onOk);
+      cancelBtn.removeEventListener('click', onCancel);
+      overlay.removeEventListener('click', onBackdrop);
+      resolve(result);
+    }
+    function onOk(){ cleanup(true); }
+    function onCancel(){ cleanup(false); }
+    function onBackdrop(e){ if (e.target === overlay) cleanup(false); }
+
+    okBtn.addEventListener('click', onOk);
+    cancelBtn.addEventListener('click', onCancel);
+    overlay.addEventListener('click', onBackdrop);
+    overlay.classList.add('open');
+  });
+}
+
+function promptDialog({ title = '', message = '', placeholder = '', defaultValue = '', confirmText = 'OK', cancelText = 'Cancel' } = {}){
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('promptOverlay');
+    document.getElementById('promptTitle').textContent = title;
+    const msgEl = document.getElementById('promptMessage');
+    msgEl.textContent = message;
+    msgEl.style.display = message ? 'block' : 'none';
+    const input = document.getElementById('promptInput');
+    input.value = defaultValue;
+    input.placeholder = placeholder;
+    const okBtn = document.getElementById('promptOkBtn');
+    const cancelBtn = document.getElementById('promptCancelBtn');
+    okBtn.textContent = confirmText;
+    cancelBtn.textContent = cancelText;
+
+    function cleanup(result){
+      overlay.classList.remove('open');
+      okBtn.removeEventListener('click', onOk);
+      cancelBtn.removeEventListener('click', onCancel);
+      overlay.removeEventListener('click', onBackdrop);
+      input.removeEventListener('keydown', onKeydown);
+      resolve(result);
+    }
+    function onOk(){ cleanup(input.value); }
+    function onCancel(){ cleanup(null); }
+    function onBackdrop(e){ if (e.target === overlay) cleanup(null); }
+    function onKeydown(e){
+      if (e.key === 'Enter') { e.preventDefault(); onOk(); }
+      if (e.key === 'Escape') onCancel();
+    }
+
+    okBtn.addEventListener('click', onOk);
+    cancelBtn.addEventListener('click', onCancel);
+    overlay.addEventListener('click', onBackdrop);
+    input.addEventListener('keydown', onKeydown);
+    overlay.classList.add('open');
+    setTimeout(() => input.focus(), 50);
+  });
+}
+
+/* ============ Scroll-to-bottom helper (used by renderMessages) ============ */
+function isNearBottom(el, threshold = 150){
+  return el.scrollHeight - el.scrollTop - el.clientHeight < threshold;
+}
+function updateScrollToBottomBtn(){
+  const area = document.getElementById('messagesArea');
+  const btn = document.getElementById('scrollToBottomBtn');
+  if (!area || !btn) return;
+  btn.classList.toggle('show', !isNearBottom(area) && area.scrollHeight > area.clientHeight);
+}
+
 /* ============ Build Screens ============ */
 const screensEl = document.getElementById('screens');
 
 function buildChatsScreen(){
-  const rows = CHATS.length ? CHATS.map(c => {
+  const skeletonRow = `
+    <div class="skeleton-row">
+      <div class="skeleton-avatar"></div>
+      <div class="skeleton-lines">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+  `;
+  const rows = chatsLoading
+    ? skeletonRow.repeat(6)
+    : (CHATS.length ? CHATS.map(c => {
     const name = chatDisplayName(c);
     const color = chatAvatarColor(c);
     const lastMsg = c.lastMessage
@@ -1461,7 +1715,7 @@ function buildChatsScreen(){
       </div>
     </div>
   `;
-  }).join('') : `<div class="placeholder-screen"><p>Koi chat nahi hai abhi.<br>Neeche + button se naya chat shuru karo.</p></div>`;
+  }).join('') : `<div class="placeholder-screen"><p>Koi chat nahi hai abhi.<br>Neeche + button se naya chat shuru karo.</p></div>`);
 
   return `
     <div class="screen" data-screen="chats">
@@ -1562,6 +1816,7 @@ function buildCallsScreen(){
 }
 
 let REELS_DATA = []; // filled from the backend via fetchReelsFeed()
+let reelsLoading = false; // true only while the first fetchReelsFeed() call is in flight
 
 function rlHeartSVG(){return `<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.3C.6 8.3 2.1 5 5.6 5c2 0 3.5 1.1 4.4 2.6C10.9 6.1 12.4 5 14.4 5 17.9 5 19.4 8.3 22 11.7 19.5 16.4 12 21 12 21z"/></svg>`;}
 function rlHeartFilledSVG(){return `<svg viewBox="0 0 24 24" style="fill:#ff3040;stroke:none;"><path d="M12 21s-7.5-4.6-10-9.3C.6 8.3 2.1 5 5.6 5c2 0 3.5 1.1 4.4 2.6C10.9 6.1 12.4 5 14.4 5 17.9 5 19.4 8.3 22 11.7 19.5 16.4 12 21 12 21z"/></svg>`;}
@@ -1576,6 +1831,17 @@ function rlPlusSVG(){return `<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"
 function rlFormatCount(n){ if(n>=1000) return (n/1000).toFixed(1).replace('.0','')+'K'; return n; }
 
 function buildReelsScreen(){
+  if (reelsLoading) {
+    return `
+      <div class="screen" data-screen="reels">
+        <div class="reels-loading">
+          <div class="reels-spinner"></div>
+          <p>Reels load ho rahe hain...</p>
+        </div>
+      </div>
+    `;
+  }
+
   const reelsHtml = REELS_DATA.length ? REELS_DATA.map((r) => {
     const uploaderName = r.user ? r.user.name : 'Unknown';
     const ini = initials(uploaderName);
@@ -1625,6 +1891,14 @@ function buildReelsScreen(){
 
 /* ============ Fetch real reels feed from backend ============ */
 async function fetchReelsFeed(){
+  reelsLoading = true;
+  const preScreenEl = document.querySelector('[data-screen="reels"]');
+  if (preScreenEl) {
+    const wasActivePre = preScreenEl.classList.contains('active');
+    preScreenEl.outerHTML = buildReelsScreen();
+    if (wasActivePre) document.querySelector('[data-screen="reels"]').classList.add('active');
+  }
+
   try {
     const res = await fetch(`${API_BASE}/reels/feed?page=1&limit=20`, {
       headers: { Authorization: `Bearer ${authToken}` },
@@ -1634,6 +1908,7 @@ async function fetchReelsFeed(){
   } catch (err) {
     console.log('Could not fetch reels:', err);
   }
+  reelsLoading = false;
   const screenEl = document.querySelector('[data-screen="reels"]');
   if (screenEl) {
     const wasActive = screenEl.classList.contains('active');
@@ -1653,15 +1928,15 @@ async function uploadNewReel(){
     if (!file) return;
 
     if (!file.type.startsWith('video/')) {
-      alert('Sirf video file select karo.');
+      showToast('Sirf video file select karo.');
       return;
     }
     if (file.size > 6 * 1024 * 1024) {
-      alert('Video 6MB se chhota hona chahiye (chhota clip try karo, 5-10 second ka).');
+      showToast('Video 6MB se chhota hona chahiye (chhota clip try karo, 5-10 second ka).');
       return;
     }
 
-    const caption = prompt('Reel ka caption likho (optional):', '') || '';
+    const caption = (await promptDialog({ title: 'Reel ka caption', placeholder: 'Kuch likho (optional)...' })) || '';
 
     const reader = new FileReader();
     reader.onload = async (e) => {
@@ -1674,7 +1949,7 @@ async function uploadNewReel(){
         });
         const savedReel = await res.json();
         if (!res.ok) {
-          alert(savedReel.message || 'Reel upload nahi hua.');
+          showToast(savedReel.message || 'Reel upload nahi hua.');
           return;
         }
         savedReel.user = currentUser;
@@ -1685,7 +1960,7 @@ async function uploadNewReel(){
         if (wasActive) document.querySelector('[data-screen="reels"]').classList.add('active');
         initReelsBehavior();
       } catch (err) {
-        alert('Backend se connect nahi ho paya. Server check karo.');
+        showToast('Backend se connect nahi ho paya. Server check karo.');
       }
     };
     reader.readAsDataURL(file);
@@ -1810,7 +2085,7 @@ async function toggleReelLike(reelId, likeBtn, likeCountEl){
 }
 
 async function openReelComments(reelId){
-  const text = prompt('Comment likho:');
+  const text = await promptDialog({ title: 'Comment likho', placeholder: 'Apna comment yahan likho...' });
   if (!text || !text.trim()) return;
   try {
     const res = await fetch(`${API_BASE}/reels/${reelId}/comment`, {
@@ -1854,6 +2129,9 @@ function buildChatWindowScreen(){
         <svg id="chatSearchDown" viewBox="0 0 24 24"><path d="M12 18l-7-7 1.4-1.4L12 15.2l5.6-5.6L19 11z"/></svg>
       </div>
       <div class="messages-area" id="messagesArea"></div>
+      <div class="scroll-to-bottom-btn" id="scrollToBottomBtn">
+        <svg viewBox="0 0 24 24"><path d="M12 16l-6-6h12z"/></svg>
+      </div>
       <div class="input-bar">
         <div class="input-pill">
           <textarea id="msgInput" placeholder="Message" rows="1"></textarea>
@@ -1936,9 +2214,7 @@ async function openChat(chatId){
     MESSAGES[chatId] = [];
   }
 
-  renderMessages(chatId);
-
-  // mark as seen (blue tick for the other person)
+  renderMessages(chatId, { forceScroll: true });
   try {
     await fetch(`${API_BASE}/messages/${chatId}/seen`, {
       method: 'PUT',
@@ -2017,17 +2293,25 @@ function docExtIcon(){
   return `<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM13 9V3.5L18.5 9H13z"/></svg>`;
 }
 
-function renderMessages(chatId){
+function renderMessages(chatId, opts = {}){
   const msgs = (MESSAGES[chatId] || []).filter(m => !DELETED_FOR_ME.has(m._id));
   const area = document.getElementById('messagesArea');
+  const shouldStickToBottom = opts.forceScroll || isNearBottom(area);
+  const prevScrollTop = area.scrollTop;
   let html = `<div class="date-chip">TODAY</div>`;
 
-  msgs.forEach(m => {
+  msgs.forEach((m, i) => {
     const isOut = m.sender._id === currentUser.id;
     const other = getOtherParticipant(currentChatObj);
     const seenByOther = other && m.seenBy && m.seenBy.some(u => (u._id || u) === other._id);
     const tick = isOut ? (m._pending ? svgClock : (seenByOther ? svgCheck2 : svgCheck1)) : '';
-    const senderLabel = (!isOut && currentChatObj.isGroupChat)
+
+    // consecutive messages from the same sender get grouped tighter, WhatsApp-style
+    const prevMsg = msgs[i - 1];
+    const isGrouped = !!(prevMsg && prevMsg.sender._id === m.sender._id);
+    const isFirstInGroup = !isGrouped;
+
+    const senderLabel = (!isOut && currentChatObj.isGroupChat && isFirstInGroup)
       ? `<b style="color:${colorFromId(m.sender._id)}">${m.sender.name}</b><br>` : '';
 
     let bodyHtml;
@@ -2052,7 +2336,7 @@ function renderMessages(chatId){
     }
 
     html += `
-      <div class="msg-row ${isOut ? 'out' : 'in'}" data-msg-id="${m._id}" data-deleted="${m.isDeletedForEveryone ? '1' : '0'}" data-pending="${m._pending ? '1' : '0'}">
+      <div class="msg-row ${isOut ? 'out' : 'in'}${isGrouped ? ' grouped' : ''}" data-msg-id="${m._id}" data-deleted="${m.isDeletedForEveryone ? '1' : '0'}" data-pending="${m._pending ? '1' : '0'}">
         <div class="bubble">
           ${bodyHtml}
           <span class="bubble-meta">${formatTime(m.createdAt)} ${tick}</span>
@@ -2061,7 +2345,16 @@ function renderMessages(chatId){
     `;
   });
   area.innerHTML = html;
-  area.scrollTop = area.scrollHeight;
+
+  // Only snap to the bottom if the person was already reading the latest
+  // messages (or we were explicitly asked to) - otherwise keep their scroll
+  // position so an incoming message doesn't yank them away mid-read.
+  if (shouldStickToBottom) {
+    area.scrollTop = area.scrollHeight;
+  } else {
+    area.scrollTop = prevScrollTop;
+  }
+  updateScrollToBottomBtn();
 
   // Tap an image/video bubble to open it fullscreen
   area.querySelectorAll('[data-view-media]').forEach(el => {
@@ -2103,6 +2396,12 @@ document.getElementById('messagesArea').addEventListener('click', (e) => {
   const row = e.target.closest('.msg-row.out');
   if (!row || row.dataset.deleted === '1' || row.dataset.pending === '1') return;
   openMessageActionSheet(row.dataset.msgId);
+});
+
+document.getElementById('messagesArea').addEventListener('scroll', updateScrollToBottomBtn);
+document.getElementById('scrollToBottomBtn').addEventListener('click', () => {
+  const area = document.getElementById('messagesArea');
+  area.scrollTo({ top: area.scrollHeight, behavior: 'smooth' });
 });
 
 // ================= PERFORMANCE: compress images before upload =================
@@ -2183,11 +2482,11 @@ document.addEventListener('change', (e) => {
 async function uploadNewStatus(file){
   if (!file) return;
   if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
-    alert('Sirf image ya video select karo.');
+    showToast('Sirf image ya video select karo.');
     return;
   }
   if (file.size > 6 * 1024 * 1024) {
-    alert('File 6MB se choti honi chahiye.');
+    showToast('File 6MB se choti honi chahiye.');
     return;
   }
 
@@ -2203,19 +2502,19 @@ async function uploadNewStatus(file){
       });
       if (!res.ok) {
         const data = await res.json();
-        alert(data.message || 'Status upload nahi ho paya.');
+        showToast(data.message || 'Status upload nahi ho paya.');
         return;
       }
       fetchStatusFeed();
     } catch (err) {
-      alert('Backend se connect nahi ho paya. Server check karo.');
+      showToast('Backend se connect nahi ho paya. Server check karo.');
     }
   }
 
   if (isVideo) {
     const reader = new FileReader();
     reader.onload = (e) => sendStatus(e.target.result);
-    reader.onerror = () => alert('File read nahi ho payi.');
+    reader.onerror = () => showToast('File read nahi ho payi.');
     reader.readAsDataURL(file);
     return;
   }
@@ -2224,7 +2523,7 @@ async function uploadNewStatus(file){
     const compressedDataUrl = await compressImage(file, 1080, 0.72);
     sendStatus(compressedDataUrl);
   } catch (err) {
-    alert('Photo process nahi ho payi. Dobara try karo.');
+    showToast('Photo process nahi ho payi. Dobara try karo.');
   }
 }
 
@@ -2261,11 +2560,11 @@ document.getElementById('settingsAvatarInput').addEventListener('change', async 
   const file = e.target.files[0];
   if (!file) return;
   if (!file.type.startsWith('image/')) {
-    alert('Sirf image select karo.');
+    showToast('Sirf image select karo.');
     return;
   }
   if (file.size > 5 * 1024 * 1024) {
-    alert('Photo 5MB se choti honi chahiye.');
+    showToast('Photo 5MB se choti honi chahiye.');
     return;
   }
 
@@ -2273,7 +2572,7 @@ document.getElementById('settingsAvatarInput').addEventListener('change', async 
   try {
     dataUrl = await compressImage(file, 640, 0.8); // avatars stay small
   } catch (err) {
-    alert('Photo process nahi ho payi. Dobara try karo.');
+    showToast('Photo process nahi ho payi. Dobara try karo.');
     return;
   }
 
@@ -2285,19 +2584,19 @@ document.getElementById('settingsAvatarInput').addEventListener('change', async 
     });
     const data = await res.json();
     if (!res.ok) {
-      alert(data.message || 'Photo update nahi ho payi.');
+      showToast(data.message || 'Photo update nahi ho payi.');
       return;
     }
     currentUser.profilePhoto = dataUrl;
     openSettingsScreen(); // re-render with new photo
     refreshChatsScreen();
   } catch (err) {
-    alert('Backend se connect nahi ho paya.');
+    showToast('Backend se connect nahi ho paya.');
   }
 });
 
 document.getElementById('settingsEditName').addEventListener('click', async () => {
-  const newName = prompt('Naya naam daalo:', currentUser.name);
+  const newName = await promptDialog({ title: 'Naam edit karo', defaultValue: currentUser.name, placeholder: 'Apna naam likho' });
   if (!newName || !newName.trim() || newName.trim() === currentUser.name) return;
 
   try {
@@ -2308,18 +2607,18 @@ document.getElementById('settingsEditName').addEventListener('click', async () =
     });
     const data = await res.json();
     if (!res.ok) {
-      alert(data.message || 'Naam update nahi hua.');
+      showToast(data.message || 'Naam update nahi hua.');
       return;
     }
     currentUser.name = newName.trim();
     openSettingsScreen();
   } catch (err) {
-    alert('Backend se connect nahi ho paya.');
+    showToast('Backend se connect nahi ho paya.');
   }
 });
 
 document.getElementById('settingsEditAbout').addEventListener('click', async () => {
-  const newAbout = prompt('Naya about text daalo:', currentUser.about || '');
+  const newAbout = await promptDialog({ title: 'About edit karo', defaultValue: currentUser.about || '', placeholder: 'Apne baare mein likho' });
   if (newAbout === null) return;
 
   try {
@@ -2330,18 +2629,19 @@ document.getElementById('settingsEditAbout').addEventListener('click', async () 
     });
     const data = await res.json();
     if (!res.ok) {
-      alert(data.message || 'About update nahi hua.');
+      showToast(data.message || 'About update nahi hua.');
       return;
     }
     currentUser.about = newAbout.trim();
     openSettingsScreen();
   } catch (err) {
-    alert('Backend se connect nahi ho paya.');
+    showToast('Backend se connect nahi ho paya.');
   }
 });
 
-document.getElementById('settingsLogout').addEventListener('click', () => {
-  if (!confirm('Kya tum logout karna chahte ho?')) return;
+document.getElementById('settingsLogout').addEventListener('click', async () => {
+  const ok = await confirmDialog({ title: 'Logout', message: 'Kya tum logout karna chahte ho?', confirmText: 'Logout', danger: true });
+  if (!ok) return;
 
   if (socket) socket.disconnect();
   authToken = null;
@@ -2387,7 +2687,7 @@ document.getElementById('backFromChat').addEventListener('click', () => {
 
 /* ============ Start a new chat with a friend (search by phone number) ============ */
 async function startNewChat(){
-  const phone = prompt('Apne friend ka phone number daalo (jaise +919876543210):', '+91');
+  const phone = await promptDialog({ title: 'Naya Chat', message: 'Apne friend ka phone number daalo', defaultValue: '+91' });
   if (!phone) return;
 
   try {
@@ -2397,7 +2697,7 @@ async function startNewChat(){
     const foundUser = await searchRes.json();
 
     if (!searchRes.ok) {
-      alert(foundUser.message || 'User nahi mila.');
+      showToast(foundUser.message || 'User nahi mila.');
       return;
     }
 
@@ -2409,7 +2709,7 @@ async function startNewChat(){
     const chat = await chatRes.json();
 
     if (!chatRes.ok) {
-      alert(chat.message || 'Chat start nahi ho payi.');
+      showToast(chat.message || 'Chat start nahi ho payi.');
       return;
     }
 
@@ -2420,25 +2720,26 @@ async function startNewChat(){
     }
     openChat(chat._id);
   } catch (err) {
-    alert('Backend se connect nahi ho paya. Server check karo.');
+    showToast('Backend se connect nahi ho paya. Server check karo.');
   }
 }
 
 /* ============ Start a new group chat (search & add multiple friends) ============ */
 async function startNewGroup(){
-  const groupName = prompt('Group ka naam daalo (jaise "Coding Squad"):');
+  const groupName = await promptDialog({ title: 'New Group', message: 'Group ka naam daalo', placeholder: 'jaise "Coding Squad"' });
   if (!groupName || !groupName.trim()) return;
 
   const memberIds = [];
   const memberNames = [];
 
-  alert('Ab members add karo, ek-ek karke. Kam se kam 2 members chahiye. Khaali chhod ke "OK" dabaoge toh add karna ruk jayega.');
+  showToast('Ab members add karo, ek-ek karke. Kam se kam 2 members chahiye. Khaali chhod ke "OK" dabaoge toh add karna ruk jayega.');
 
   while (true) {
-    const phone = prompt(
-      `Member ${memberIds.length + 1} ka phone number daalo${memberNames.length ? '\n\nAb tak add: ' + memberNames.join(', ') : ''}\n(khaali chhodke OK dabao jab add karna khatam ho)`,
-      '+91'
-    );
+    const phone = await promptDialog({
+      title: `Member ${memberIds.length + 1}`,
+      message: memberNames.length ? 'Ab tak add: ' + memberNames.join(', ') : 'Phone number daalo',
+      defaultValue: '+91',
+    });
     if (!phone || !phone.trim() || phone.trim() === '+91') break;
 
     try {
@@ -2448,24 +2749,24 @@ async function startNewGroup(){
       const foundUser = await searchRes.json();
 
       if (!searchRes.ok) {
-        alert(foundUser.message || 'User nahi mila, dobara try karo.');
+        showToast(foundUser.message || 'User nahi mila, dobara try karo.');
         continue;
       }
       if (memberIds.includes(foundUser._id)) {
-        alert('Ye member already add hai.');
+        showToast('Ye member already add hai.');
         continue;
       }
 
       memberIds.push(foundUser._id);
       memberNames.push(foundUser.name);
     } catch (err) {
-      alert('Backend se connect nahi ho paya.');
+      showToast('Backend se connect nahi ho paya.');
       return;
     }
   }
 
   if (memberIds.length < 2) {
-    alert('Group banane ke liye kam se kam 2 members chahiye. Dobara try karo.');
+    showToast('Group banane ke liye kam se kam 2 members chahiye. Dobara try karo.');
     return;
   }
 
@@ -2478,7 +2779,7 @@ async function startNewGroup(){
     const group = await res.json();
 
     if (!res.ok) {
-      alert(group.message || 'Group ban nahi paya.');
+      showToast(group.message || 'Group ban nahi paya.');
       return;
     }
 
@@ -2486,7 +2787,7 @@ async function startNewGroup(){
     refreshChatsScreen();
     openChat(group._id);
   } catch (err) {
-    alert('Backend se connect nahi ho paya. Server check karo.');
+    showToast('Backend se connect nahi ho paya. Server check karo.');
   }
 }
 
@@ -2658,7 +2959,7 @@ async function sendCurrentMessage(){
   };
   MESSAGES[currentChatId] = MESSAGES[currentChatId] || [];
   MESSAGES[currentChatId].push(tempMessage);
-  renderMessages(currentChatId);
+  renderMessages(currentChatId, { forceScroll: true });
 
   try {
     const res = await fetch(`${API_BASE}/messages`, {
@@ -2676,7 +2977,7 @@ async function sendCurrentMessage(){
     const list = MESSAGES[currentChatId] || [];
     const idx = list.findIndex(m => m._id === tempId);
     if (idx !== -1) list[idx] = savedMessage;
-    renderMessages(currentChatId);
+    renderMessages(currentChatId, { forceScroll: true });
 
     // update chat list preview locally
     if (currentChatObj) {
@@ -2696,7 +2997,7 @@ async function sendCurrentMessage(){
     msgInput.style.height = 'auto';
     msgInput.style.height = Math.min(msgInput.scrollHeight, 90) + 'px';
     updateSendBtnIcon();
-    alert(err.message || 'Backend se connect nahi ho paya. Message save nahi hua.');
+    showToast(err.message || 'Backend se connect nahi ho paya. Message save nahi hua.');
   }
 }
 
@@ -2780,7 +3081,7 @@ async function startCall(callType){
   const other = getCallOtherParticipant();
   if (!other) return;
   if (currentChatObj.isGroupChat) {
-    alert('Group calls are not supported yet - only 1-to-1 calls.');
+    showToast('Group calls are not supported yet - only 1-to-1 calls.');
     return;
   }
 
@@ -2800,7 +3101,7 @@ async function startCall(callType){
       video: callType === 'video',
     });
   } catch (err) {
-    alert('Camera/Microphone access denied or not available.');
+    showToast('Camera/Microphone access denied or not available.');
     closeCallOverlay();
     return;
   }
@@ -2912,7 +3213,7 @@ document.getElementById('callAcceptBtn').addEventListener('click', async () => {
       video: currentCallType === 'video',
     });
   } catch (err) {
-    alert('Camera/Microphone access denied or not available.');
+    showToast('Camera/Microphone access denied or not available.');
     socket.emit('reject-call', { to: currentCallPeerId });
     closeCallOverlay();
     currentCallPeerId = null;
@@ -3029,7 +3330,8 @@ document.getElementById('msgActionDeleteEveryone').addEventListener('click', () 
 });
 
 async function deleteMessageForMe(messageId){
-  if (!confirm('Ye message sirf tumhare liye delete hoga. Doosre insaan ko unke WhatsApp mein ye message wahi dikhega. Continue karein?')) return;
+  const ok1 = await confirmDialog({ title: 'Delete for Me', message: 'Ye message sirf tumhare liye delete hoga. Doosre insaan ko unke WhatsApp mein ye message wahi dikhega.', confirmText: 'Delete', danger: true });
+  if (!ok1) return;
 
   DELETED_FOR_ME.add(messageId);
   if (currentChatId) renderMessages(currentChatId); // hide it immediately
@@ -3058,7 +3360,8 @@ function markMessageDeletedEverywhere(messageId){
 }
 
 async function deleteMessageForEveryone(messageId){
-  if (!confirm('Kya tum is message ko everyone ke liye delete karna chahte ho? Wo dekhenge ki message delete ho gaya hai.')) return;
+  const ok2 = await confirmDialog({ title: 'Delete for Everyone', message: 'Wo dekhenge ki message delete ho gaya hai.', confirmText: 'Delete', danger: true });
+  if (!ok2) return;
 
   markMessageDeletedEverywhere(messageId); // instant feedback on this device
 
@@ -3329,7 +3632,7 @@ async function toggleMuteChat(){
     });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      alert(data.message || 'Mute update nahi hua.');
+      showToast(data.message || 'Mute update nahi hua.');
       return;
     }
     currentChatObj.isMuted = newMuted;
@@ -3341,14 +3644,15 @@ async function toggleMuteChat(){
     document.getElementById('menuMuteLabel').textContent = newMuted ? 'Unmute Notifications' : 'Mute Notifications';
     refreshChatsScreen();
   } catch (err) {
-    alert('Backend se connect nahi ho paya. Server check karo.');
+    showToast('Backend se connect nahi ho paya. Server check karo.');
   }
 }
 
 /* ---- 5. Clear Chat ---- */
 async function clearCurrentChat(){
   if (!currentChatId) return;
-  if (!confirm('Kya tum is chat ke saare messages clear karna chahte ho? Ye undo nahi ho sakta.')) return;
+  const okClear = await confirmDialog({ title: 'Clear Chat', message: 'Is chat ke saare messages clear ho jaayenge. Ye undo nahi ho sakta.', confirmText: 'Clear', danger: true });
+  if (!okClear) return;
 
   try {
     const res = await fetch(CHAT_MENU_ENDPOINTS.clearChat(currentChatId), {
@@ -3357,7 +3661,7 @@ async function clearCurrentChat(){
     });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      alert(data.message || 'Chat clear nahi hui.');
+      showToast(data.message || 'Chat clear nahi hui.');
       return;
     }
     MESSAGES[currentChatId] = [];
@@ -3368,14 +3672,15 @@ async function clearCurrentChat(){
     refreshChatsScreen();
     document.getElementById('infoOverlay').classList.remove('open');
   } catch (err) {
-    alert('Backend se connect nahi ho paya. Server check karo.');
+    showToast('Backend se connect nahi ho paya. Server check karo.');
   }
 }
 
 /* ---- 6. Delete Chat ---- */
 async function deleteCurrentChat(){
   if (!currentChatId) return;
-  if (!confirm('Kya tum poori chat delete karna chahte ho? Ye permanent hai aur undo nahi ho sakta.')) return;
+  const okDelete = await confirmDialog({ title: 'Delete Chat', message: 'Poori chat delete ho jaayegi. Ye permanent hai aur undo nahi ho sakta.', confirmText: 'Delete', danger: true });
+  if (!okDelete) return;
 
   const chatIdToDelete = currentChatId;
   try {
@@ -3385,7 +3690,7 @@ async function deleteCurrentChat(){
     });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      alert(data.message || 'Chat delete nahi hui.');
+      showToast(data.message || 'Chat delete nahi hui.');
       return;
     }
     CHATS = CHATS.filter(c => c._id !== chatIdToDelete);
@@ -3405,7 +3710,7 @@ async function deleteCurrentChat(){
 
     refreshChatsScreen();
   } catch (err) {
-    alert('Backend se connect nahi ho paya. Server check karo.');
+    showToast('Backend se connect nahi ho paya. Server check karo.');
   }
 }
 
@@ -3475,7 +3780,7 @@ document.getElementById('sendOtpBtn').addEventListener('click', async () => {
     // Development convenience: backend returns devOtp when not in production.
     // Twilio isn't connected yet, so this is the only way to see the code right now.
     if (data.devOtp) {
-      setTimeout(() => alert(`(Dev mode) Tumhara OTP hai: ${data.devOtp}\n\nAsli app mein ye SMS se aayega.`), 200);
+      setTimeout(() => showToast(`(Dev mode) Tumhara OTP hai: ${data.devOtp}\n\nAsli app mein ye SMS se aayega.`), 200);
     }
   } catch (err) {
     setAuthError('phoneError', 'Backend server se connect nahi ho paya. Check karo server chal raha hai (npm run dev) http://localhost:5000 par.');
@@ -3559,11 +3864,11 @@ avatarFileInput.addEventListener('change', async () => {
   if (!file) return;
 
   if (!file.type.startsWith('image/')) {
-    alert('Sirf image file select karo (jpg, png, etc.)');
+    showToast('Sirf image file select karo (jpg, png, etc.)');
     return;
   }
   if (file.size > 5 * 1024 * 1024) {
-    alert('Photo 5MB se chhoti honi chahiye.');
+    showToast('Photo 5MB se chhoti honi chahiye.');
     return;
   }
 
@@ -3574,7 +3879,7 @@ avatarFileInput.addEventListener('change', async () => {
     img.style.display = 'block';
     document.getElementById('avatarPlaceholderIcon').style.display = 'none';
   } catch (err) {
-    alert('Photo process nahi ho payi. Dobara try karo.');
+    showToast('Photo process nahi ho payi. Dobara try karo.');
   }
 });
 
@@ -3600,7 +3905,7 @@ document.getElementById('finishProfileBtn').addEventListener('click', async () =
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.message || 'Profile save nahi hui, dobara try karo.');
+      showToast(data.message || 'Profile save nahi hui, dobara try karo.');
       setBtnLoading(btn, false, 'WhatsReels shuru karo');
       return;
     }
@@ -3608,7 +3913,7 @@ document.getElementById('finishProfileBtn').addEventListener('click', async () =
     currentUser = data.user;
     completeLogin();
   } catch (err) {
-    alert('Backend se connect nahi ho paya. Server check karo.');
+    showToast('Backend se connect nahi ho paya. Server check karo.');
     setBtnLoading(btn, false, 'WhatsReels shuru karo');
   }
 });
@@ -3717,12 +4022,12 @@ async function fetchChats(){
       headers: { Authorization: `Bearer ${authToken}` },
     });
     const data = await res.json();
-    if (res.ok) {
-      CHATS = data;
-      refreshChatsScreen();
-    }
+    if (res.ok) CHATS = data;
   } catch (err) {
     console.log('Could not fetch chats:', err);
+  } finally {
+    chatsLoading = false;
+    refreshChatsScreen();
   }
 }
 
@@ -3778,7 +4083,7 @@ async function handleChatFileUpload(file, type){
 
   const maxSize = type === 'document' ? 10 * 1024 * 1024 : 8 * 1024 * 1024;
   if (file.size > maxSize) {
-    alert(`File ${maxSize / (1024*1024)}MB se choti honi chahiye.`);
+    showToast(`File ${maxSize / (1024*1024)}MB se choti honi chahiye.`);
     return;
   }
 
@@ -3800,13 +4105,13 @@ async function handleChatFileUpload(file, type){
       hideUploadingBubble();
 
       if (!res.ok) {
-        alert(savedMessage.message || 'Upload nahi hua.');
+        showToast(savedMessage.message || 'Upload nahi hua.');
         return;
       }
 
       MESSAGES[currentChatId] = MESSAGES[currentChatId] || [];
       MESSAGES[currentChatId].push(savedMessage);
-      renderMessages(currentChatId);
+      renderMessages(currentChatId, { forceScroll: true });
 
       if (currentChatObj) {
         currentChatObj.lastMessage = savedMessage;
@@ -3817,7 +4122,7 @@ async function handleChatFileUpload(file, type){
       }
     } catch (err) {
       hideUploadingBubble();
-      alert('Backend se connect nahi ho paya. Upload fail hua.');
+      showToast('Backend se connect nahi ho paya. Upload fail hua.');
     }
   }
 
@@ -3828,7 +4133,7 @@ async function handleChatFileUpload(file, type){
       sendDataUrl(compressedDataUrl);
     } catch (err) {
       hideUploadingBubble();
-      alert('Photo process nahi ho payi. Dobara try karo.');
+      showToast('Photo process nahi ho payi. Dobara try karo.');
     }
     return;
   }
@@ -3838,7 +4143,7 @@ async function handleChatFileUpload(file, type){
   reader.onload = (e) => sendDataUrl(e.target.result);
   reader.onerror = () => {
     hideUploadingBubble();
-    alert('File read nahi ho payi.');
+    showToast('File read nahi ho payi.');
   };
   reader.readAsDataURL(file);
 }
